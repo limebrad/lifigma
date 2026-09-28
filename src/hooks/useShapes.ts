@@ -21,6 +21,13 @@ const DEFAULT_FILL = '#7c6cff'
 const HISTORY_LIMIT = 100
 
 /**
+ * Окно, за которое частые правки одного свойства считаются одним жестом.
+ * 600 мс — длиннее, чем пауза между кадрами системного пикера цвета,
+ * и короче, чем осознанная пауза человека перед следующим изменением.
+ */
+const HISTORY_COALESCE_MS = 600
+
+/**
  * Стартовая позиция одной фигуры в момент начала перетаскивания.
  * «Холст» (Canvas) вычисляет её из актуального состояния фигур и передаёт
  * в beginDrag, а useShapes уже двигает фигуры от этой базы дельтой курсора.
@@ -89,6 +96,9 @@ export function useShapes(): UseShapes {
   // чем перерисовка, и обработчик обязан видеть актуальные данные без
   // устаревших замыканий. Объявлен до undo/redo: отмена тоже гасит жест.
   const dragRef = useRef<DragState | null>(null)
+  // Последняя правка свойства: нужна, чтобы сливать частые изменения одного
+  // поля в один шаг истории (см. updateShape).
+  const lastEditRef = useRef<{ key: string; at: number } | null>(null)
 
   // История изменений: past — «до»-снимки (undo), future — отменённые
   // состояния (redo). Снимки — это целые массивы фигур, поэтому они
@@ -121,6 +131,7 @@ export function useShapes(): UseShapes {
     // Перетаскивание, начатое до отмены, больше не имеет смысла: его
     // «изначальные позиции» уже не соответствуют состоянию.
     dragRef.current = null
+    lastEditRef.current = null
     // Убираем из выделения фигуры, которых больше нет в состоянии.
     setSelectedIds((prev) => prev.filter((id) => previous.some((shape) => shape.id === id)))
   }, [])
@@ -134,6 +145,7 @@ export function useShapes(): UseShapes {
     setDraft(null)
     draftRef.current = null
     dragRef.current = null
+    lastEditRef.current = null
     setSelectedIds((prev) => prev.filter((id) => next.some((shape) => shape.id === id)))
   }, [])
 
@@ -145,7 +157,17 @@ export function useShapes(): UseShapes {
       (key) => shape[key] !== patch[key],
     )
     if (!changed) return
-    pushHistory()
+    // Слияние частых правок одного и того же свойства в один шаг истории.
+    // Системный пикер цвета шлёт input-событие на каждый шаг перетаскивания
+    // (десятки событий на одно движение), и без слияния одно изменение
+    // цвета превращалось в десятки нажатий Ctrl+Z, быстро выедая историю.
+    const editKey = `${id}:${Object.keys(patch).sort().join(',')}`
+    const now = Date.now()
+    const previous = lastEditRef.current
+    const isContinuation =
+      previous !== null && previous.key === editKey && now - previous.at < HISTORY_COALESCE_MS
+    if (!isContinuation) pushHistory()
+    lastEditRef.current = { key: editKey, at: now }
     setShapes((prev) => prev.map((item) => (item.id === id ? { ...item, ...patch } : item)))
   }, [pushHistory])
 
