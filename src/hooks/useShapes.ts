@@ -7,7 +7,7 @@
  * снимок состояния в past, кадры перетаскивания мыши историю не засоряют.
  * Компоненты получают всё через пропсы и не знают, как хранится состояние.
  */
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import type { DraftShape, Point, SelectMode, Shape, ShapeType, Tool } from '../types/shape'
 
 function createId(): string {
@@ -105,12 +105,19 @@ export function useShapes(): UseShapes {
   // иммутабельны: каждый сеттер создаёт новый массив.
   const pastRef = useRef<Shape[][]>([])
   const futureRef = useRef<Shape[][]>([])
-  // Зеркало последних зафиксированных фигур: pushHistory снимает «до»-снимок
-  // синхронно в момент вызова, не дожидаясь рендера.
+  // Актуальный список фигур «на сейчас». Раньше он зеркалился в useEffect,
+  // а пассивные эффекты выполняются отдельной задачей: два изменения,
+  // попавшие в один батч, оба читали устаревшее зеркало и снимали в историю
+  // один и тот же базовый снимок — на одно логическое изменение требовалось
+  // два Ctrl+Z. Теперь write идёт только через commitShapes, поэтому
+  // shapesRef всегда равен тому, что отрисовано, без окна на рассинхрон.
   const shapesRef = useRef<Shape[]>([])
-  useEffect(() => {
-    shapesRef.current = shapes
-  }, [shapes])
+
+  /** Единственная точка записи состояния фигур: state и зеркало — всегда вместе. */
+  const commitShapes = useCallback((next: Shape[]) => {
+    shapesRef.current = next
+    setShapes(next)
+  }, [])
 
   /** Снять снимок текущего состояния в историю (перед изменением). */
   const pushHistory = useCallback(() => {
@@ -124,8 +131,7 @@ export function useShapes(): UseShapes {
     const previous = pastRef.current.pop()
     if (!previous) return
     futureRef.current.push(shapesRef.current)
-    shapesRef.current = previous
-    setShapes(previous)
+    commitShapes(previous)
     setDraft(null)
     draftRef.current = null
     // Перетаскивание, начатое до отмены, больше не имеет смысла: его
@@ -134,20 +140,19 @@ export function useShapes(): UseShapes {
     lastEditRef.current = null
     // Убираем из выделения фигуры, которых больше нет в состоянии.
     setSelectedIds((prev) => prev.filter((id) => previous.some((shape) => shape.id === id)))
-  }, [])
+  }, [commitShapes])
 
   const redo = useCallback(() => {
     const next = futureRef.current.pop()
     if (!next) return
     pastRef.current.push(shapesRef.current)
-    shapesRef.current = next
-    setShapes(next)
+    commitShapes(next)
     setDraft(null)
     draftRef.current = null
     dragRef.current = null
     lastEditRef.current = null
     setSelectedIds((prev) => prev.filter((id) => next.some((shape) => shape.id === id)))
-  }, [])
+  }, [commitShapes])
 
   const updateShape = useCallback((id: string, patch: Partial<Omit<Shape, 'id'>>) => {
     const shape = shapesRef.current.find((item) => item.id === id)
@@ -168,8 +173,10 @@ export function useShapes(): UseShapes {
       previous !== null && previous.key === editKey && now - previous.at < HISTORY_COALESCE_MS
     if (!isContinuation) pushHistory()
     lastEditRef.current = { key: editKey, at: now }
-    setShapes((prev) => prev.map((item) => (item.id === id ? { ...item, ...patch } : item)))
-  }, [pushHistory])
+    commitShapes(
+      shapesRef.current.map((item) => (item.id === id ? { ...item, ...patch } : item)),
+    )
+  }, [commitShapes, pushHistory])
 
   // Удаление пачкой: один вызов — один снимок истории, поэтому стёртые
   // Ctrl+Z возвращает все фигуры разом, а не по одной за нажатие.
@@ -179,9 +186,9 @@ export function useShapes(): UseShapes {
     const doomed = new Set(ids.filter((id) => shapesRef.current.some((shape) => shape.id === id)))
     if (doomed.size === 0) return
     pushHistory()
-    setShapes((prev) => prev.filter((shape) => !doomed.has(shape.id)))
+    commitShapes(shapesRef.current.filter((shape) => !doomed.has(shape.id)))
     setSelectedIds((prev) => prev.filter((selectedId) => !doomed.has(selectedId)))
-  }, [pushHistory])
+  }, [commitShapes, pushHistory])
 
   const selectShape = useCallback((id: string, mode: SelectMode = 'replace') => {
     setSelectedIds((prev) => {
@@ -209,7 +216,9 @@ export function useShapes(): UseShapes {
     }
     draftRef.current = shape
     setDraft(shape)
-    setSelectedIds([])
+    // Выделение здесь намеренно НЕ сбрасываем. endDraw переводит его на новую
+    // фигуру, а клик без перетаскивания ничего не создаёт — раньше он молча
+    // снимал выделение, и пользователь терял его, нажав «R» и щёлкнув впустую.
   }, [])
 
   const updateDraw = useCallback((current: Point) => {
@@ -237,10 +246,10 @@ export function useShapes(): UseShapes {
     if (!shape || shape.width < 1 || shape.height < 1) return null
     pushHistory()
     const id = createId()
-    setShapes((prev) => [...prev, { ...shape, id }])
+    commitShapes([...shapesRef.current, { ...shape, id }])
     setSelectedIds([id])
     return id
-  }, [pushHistory])
+  }, [commitShapes, pushHistory])
 
   const cancelDraw = useCallback(() => {
     draftRef.current = null
@@ -276,14 +285,14 @@ export function useShapes(): UseShapes {
       pushHistory()
       drag.historyPushed = true
     }
-    setShapes((prev) =>
-      prev.map((shape) => {
+    commitShapes(
+      shapesRef.current.map((shape) => {
         const original = drag.originals.get(shape.id)
         if (!original) return shape
         return { ...shape, x: original.x + dx, y: original.y + dy }
       }),
     )
-  }, [pushHistory])
+  }, [commitShapes, pushHistory])
 
   const endDrag = useCallback(() => {
     dragRef.current = null
