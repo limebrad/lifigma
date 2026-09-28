@@ -4,8 +4,15 @@ node_modules
 # Build output
 dist
 
+# TypeScript incremental build info
+*.tsbuildinfo
+
 # Local env files
 *.local
+
+# Python bytecode (вспомогательные скрипты скиллов)
+__pycache__/
+*.py[cod]
 
 # Editor & OS
 .DS_Store
