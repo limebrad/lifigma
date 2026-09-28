@@ -8,6 +8,8 @@ dist
 *.tsbuildinfo
 
 # Local env files
+.env
+.env.*
 *.local
 
 # Python bytecode (вспомогательные скрипты скиллов)
