@@ -252,8 +252,10 @@ export function Canvas({
       onContextMenu={(event) => event.preventDefault()}
     >
       {/* Смена выделения озвучивается скринридером: иначе на холсте нет ни
-          одного узла, доступного с клавиатуры, и состояние неузнаваемо. */}
-      <p className="sr-only" role="status" aria-live="polite">
+          одного узла, доступного с клавиатуры, и состояние неузнаваемо.
+          pointer-events-none обязателен: узел лежит внутри холста, который
+          обрабатывает клики, и иначе спрятанный текст перехватывал бы их. */}
+      <p className="pointer-events-none sr-only" role="status" aria-live="polite">
         {statusMessage}
       </p>
       {/* Сетка */}
