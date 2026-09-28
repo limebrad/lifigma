@@ -4,6 +4,7 @@
  * как в Figma). Клик по слою выделяет фигуру на холсте; фигура, созданная
  * последней, оказывается в начале списка.
  */
+import { useMemo } from 'react'
 import type { Shape } from '../types/shape'
 
 export interface LayersPanelProps {
@@ -12,10 +13,22 @@ export interface LayersPanelProps {
   onSelectShape: (id: string) => void
 }
 
+interface LayerRow {
+  shape: Shape
+  /** Номер слоя: 1 — самый верхний, как в Figma. */
+  number: number
+}
+
 export function LayersPanel({ shapes, selectedIds, onSelectShape }: LayersPanelProps) {
   // В массиве shapes верхняя фигура — последняя (рисуется поверх остальных),
   // поэтому для «файлового» порядка списка переворачиваем массив.
-  const orderedShapes = [...shapes].reverse()
+  // Нумерация копируется сюда же: считать её в разметке через
+  // shapes.indexOf(shape) стоило O(n²) на каждый рендер и давало номера
+  // снизу вверх, хотя шапка обещает «сверху вниз».
+  const rows = useMemo<LayerRow[]>(
+    () => shapes.map((shape, index) => ({ shape, number: shapes.length - index })).reverse(),
+    [shapes],
+  )
 
   return (
     <section className="flex min-h-0 flex-1 flex-col bg-panel">
@@ -23,22 +36,24 @@ export function LayersPanel({ shapes, selectedIds, onSelectShape }: LayersPanelP
         Слои
       </header>
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
-        {shapes.length === 0 ? (
+        {rows.length === 0 ? (
           <p className="px-2 py-1 text-sm text-text-muted">
             Холст пуст. Выберите инструмент — фигуры появятся здесь.
           </p>
         ) : (
-          <ul className="space-y-0.5">
-            {orderedShapes.map((shape) => {
-              const index = shapes.indexOf(shape) + 1
+          // Слои — это множественный выбор, поэтому список с опциями:
+          // раньше это был <ul> из независимых кнопок-тумблеров без
+          // никакой семантики списка.
+          <ul role="listbox" aria-label="Слои" aria-multiselectable="true" className="space-y-0.5">
+            {rows.map(({ shape, number }) => {
               const isSelected = selectedIds.includes(shape.id)
-              const label = `${shape.type} ${index}`
               return (
-                <li key={shape.id}>
+                <li key={shape.id} role="none">
                   <button
                     type="button"
+                    role="option"
+                    aria-selected={isSelected}
                     onClick={() => onSelectShape(shape.id)}
-                    aria-pressed={isSelected}
                     className={`flex w-full items-center gap-2 rounded px-2 py-1.5 text-left text-sm transition-colors ${
                       isSelected
                         ? 'bg-accent/15 text-text-main'
@@ -54,7 +69,9 @@ export function LayersPanel({ shapes, selectedIds, onSelectShape }: LayersPanelP
                     <span className="shrink-0 text-xs text-text-muted">
                       {shape.type === 'ellipse' ? '⬭' : '▭'}
                     </span>
-                    <span className="truncate">{label}</span>
+                    <span className="truncate">
+                      {shape.type} {number}
+                    </span>
                   </button>
                 </li>
               )

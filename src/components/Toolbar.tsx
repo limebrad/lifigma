@@ -13,7 +13,15 @@ export interface ToolbarProps {
 
 export function Toolbar({ activeTool, onSelectTool }: ToolbarProps) {
   return (
-    <div className="relative z-10 flex w-14 shrink-0 flex-col items-center gap-1.5 border-r border-panel-border bg-panel py-3">
+    // Инструмент всегда ровно один, поэтому это переключатель из одного
+    // выбора (radiogroup), а не три независимых кнопки-тумблера. С
+    // aria-pressed скринридер объявлял бы «нажато: нет, нажато: нет,
+    // нажато: да» и не давал понять, что вариант взаимно исключающий.
+    <div
+      role="radiogroup"
+      aria-label="Инструменты"
+      className="relative z-10 flex w-14 shrink-0 flex-col items-center gap-1.5 border-r border-panel-border bg-panel py-3"
+    >
       <span className="mb-2 select-none text-xs font-bold tracking-widest text-text-muted">
         MF
       </span>
@@ -23,8 +31,9 @@ export function Toolbar({ activeTool, onSelectTool }: ToolbarProps) {
           <button
             key={tool.id}
             type="button"
+            role="radio"
+            aria-checked={isActive}
             title={tool.hint}
-            aria-pressed={isActive}
             onClick={() => onSelectTool(tool.id)}
             className={`flex h-10 w-10 items-center justify-center rounded-lg transition-colors ${
               isActive

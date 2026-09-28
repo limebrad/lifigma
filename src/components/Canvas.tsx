@@ -17,7 +17,7 @@ import { useViewport } from '../hooks/useViewport'
 import type { DragOriginal } from '../hooks/useShapes'
 import type { DraftShape, Point, SelectMode, Shape, ShapeType, Tool } from '../types/shape'
 import { findTopShapeAt, screenToCanvas } from '../utils/geometry'
-import { ShapeView } from './Shape'
+import { MemoizedShapeView as ShapeView } from './Shape'
 
 export interface CanvasProps {
   shapes: Shape[]
@@ -230,17 +230,32 @@ export function Canvas({
           ? 'move'
           : 'default'
 
+  const statusMessage = selectedIds.length === 0
+    ? `Холст: фигур — ${shapes.length}, ничего не выбрано`
+    : selectedIds.length === 1
+      ? `Выбрана 1 фигура из ${shapes.length}`
+      : `Выбрано фигур: ${selectedIds.length} из ${shapes.length}`
+
   return (
     <div
       ref={containerRef}
       className="absolute inset-0 overflow-hidden select-none"
       style={{ cursor, touchAction: 'none' }}
+      // Холст — это приложение, а не документ: скринридер иначе читает его
+      // как пустой блок и не понимает, что фигуры вообще есть.
+      role="application"
+      aria-label="Холст редактора. Инструменты: V — выбор, R — прямоугольник, O — эллипс. Delete — удалить выделенное, Escape — сбросить выделение."
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerCancel}
       onContextMenu={(event) => event.preventDefault()}
     >
+      {/* Смена выделения озвучивается скринридером: иначе на холсте нет ни
+          одного узла, доступного с клавиатуры, и состояние неузнаваемо. */}
+      <p className="sr-only" role="status" aria-live="polite">
+        {statusMessage}
+      </p>
       {/* Сетка */}
       <div
         className="absolute inset-0"

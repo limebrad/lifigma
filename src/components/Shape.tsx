@@ -8,6 +8,7 @@
  * и перетаскивание обрабатывает холст (Canvas) через хит-тест findTopShapeAt
  * из src/utils/geometry.ts, так что клику не мешают рамки соседних фигур.
  */
+import { memo } from 'react'
 import type { CSSProperties } from 'react'
 import type { Shape as ShapeModel, Size } from '../types/shape'
 import { canvasToScreen } from '../utils/geometry'
@@ -106,3 +107,11 @@ export function ShapeView({
     </div>
   )
 }
+
+/**
+ * Фигура перерисовывается только когда изменилась она сама или её выделение.
+ * Без этого любая правка (скажем, смена цвета у одной фигуры) проходила
+ * через все ShapeView на холсте. Панорама и зум memo не отсекают — там
+ * меняется viewport у всех сразу, — но правки фигур и выбор он ускоряет.
+ */
+export const MemoizedShapeView = memo(ShapeView)

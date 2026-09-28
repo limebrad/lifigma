@@ -12,7 +12,7 @@ import type { PointerEvent as ReactPointerEvent } from 'react'
 import type { Point, Size } from '../types/shape'
 import { clamp, zoomAt } from '../utils/geometry'
 import type { Viewport } from '../utils/geometry'
-import { isEditableTarget } from '../utils/dom'
+import { shouldIgnorePanHotkey } from '../utils/dom'
 
 /** Минимальный зум: 10%. */
 const MIN_ZOOM = 0.1
@@ -79,8 +79,9 @@ export function useViewport(): ViewportApi {
   useEffect(() => {
     // Пробел в поле ввода (например, в цвете `rgb(1 2 3)`) — это пробел
     // пользователя, а не панорама: такой перехват ломал ввод в панели свойств.
+    // Пробел на сфокусированной кнопке тоже не наш: им активируют кнопку.
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code !== 'Space' || isEditableTarget(event.target)) return
+      if (event.code !== 'Space' || shouldIgnorePanHotkey(event.target)) return
       event.preventDefault()
       if (!event.repeat) {
         spaceDownRef.current = true

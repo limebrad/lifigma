@@ -18,3 +18,22 @@ export function isEditableTarget(target: EventTarget | null): boolean {
   if (element.isContentEditable) return true
   return Boolean(element.closest('input, textarea, select, [contenteditable="true"]'))
 }
+
+/**
+ * Фокус стоит на элементе, который сам обрабатывает нажатие Space: у <button>
+ * и у ссылок Space вызывает активацию. Пробел в режиме «рука» нельзя
+ * перехватывать, иначе сфокусированную кнопку невозможно нажать с клавиатуры.
+ */
+export function isActivatableTarget(target: EventTarget | null): boolean {
+  return target instanceof HTMLElement && Boolean(target.closest('button, a[href], [role="button"]'))
+}
+
+/**
+ * Нужно ли игнорировать пробел как горячую клавишу панорамы. Отдельная
+ * функция, потому что правило для пробела строже, чем для остальных клавиш:
+ * V / R / O внутри полей ввода тоже не работают, но фокус на кнопке не должен
+ * отключать переключение инструмента.
+ */
+export function shouldIgnorePanHotkey(target: EventTarget | null): boolean {
+  return isEditableTarget(target) || isActivatableTarget(target)
+}
