@@ -31,6 +31,16 @@ export interface DragOriginal {
   y: number
 }
 
+/** Внутреннее состояние идущего перетаскивания (живёт только в рефе). */
+interface DragState {
+  /** Точка, где начался жест, в мировых координатах. */
+  start: Point
+  /** Стартовые позиции перетаскиваемых фигур по id. */
+  originals: Map<string, DragOriginal>
+  /** Снимок истории уже снят — состояние действительно поменялось. */
+  historyPushed: boolean
+}
+
 export interface UseShapes {
   shapes: Shape[]
   /** Активный инструмент (из левой панели). */
@@ -74,6 +84,11 @@ export function useShapes(): UseShapes {
   // Зеркало черновика: pointermove приходит часто, и обработчик обязан
   // видеть актуальные значения без устаревших замыканий.
   const draftRef = useRef<DraftShape | null>(null)
+  // Перетаскивание выделенных фигур: точка старта + изначальные позиции.
+  // Реф нужен по той же причине, что и draftRef, — pointermove приходит чаще,
+  // чем перерисовка, и обработчик обязан видеть актуальные данные без
+  // устаревших замыканий. Объявлен до undo/redo: отмена тоже гасит жест.
+  const dragRef = useRef<DragState | null>(null)
 
   // История изменений: past — «до»-снимки (undo), future — отменённые
   // состояния (redo). Снимки — это целые массивы фигур, поэтому они
@@ -211,16 +226,6 @@ export function useShapes(): UseShapes {
   }, [])
 
   // Перетаскивание выделенных фигур: точка старта + изначальные позиции.
-  // Реф нужен по той же причине, что и draftRef, — pointermove приходит чаще,
-  // чем перерисовка, и обработчик обязан видеть актуальные данные без
-  // устаревших замыканий.
-  const dragRef = useRef<{
-    start: Point
-    originals: Map<string, DragOriginal>
-    /** Снимок истории уже снят — состояние действительно поменялось. */
-    historyPushed: boolean
-  } | null>(null)
-
   const beginDrag = useCallback((start: Point, originals: DragOriginal[]) => {
     if (originals.length === 0) return
     // Снимок НЕ снимаем здесь: клик по фигуре без перетаскивания ничего не
@@ -241,6 +246,8 @@ export function useShapes(): UseShapes {
     // позиций — так выделение движется «как единое целое».
     const dx = current.x - drag.start.x
     const dy = current.y - drag.start.y
+    // Нулевая дельта — позиции не меняются: не плодим новые объекты фигур
+    // и не перерисовываем холст, просто потому что курсор дёрнулся на пиксель.
     if (dx === 0 && dy === 0) return
     // Один снимок на всё перетаскивание: кадры pointermove историю не засоряют.
     if (!drag.historyPushed) {
