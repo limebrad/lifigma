@@ -15,7 +15,7 @@ import { useRef, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent } from 'react'
 import { useViewport } from '../hooks/useViewport'
 import type { DragOriginal } from '../hooks/useShapes'
-import type { DraftShape, Point, Shape, ShapeType, Tool } from '../types/shape'
+import type { DraftShape, Point, SelectMode, Shape, ShapeType, Tool } from '../types/shape'
 import { findTopShapeAt, screenToCanvas } from '../utils/geometry'
 import { ShapeView } from './Shape'
 
@@ -26,7 +26,7 @@ export interface CanvasProps {
   /** Черновик фигуры, которая рисуется прямо сейчас. */
   draft: DraftShape | null
   /** Выделить фигуру (клик по ней в режиме «select»). */
-  selectShape: (id: string) => void
+  selectShape: (id: string, mode?: SelectMode) => void
   /** Снять выделение (клик по пустому месту холста). */
   clearSelection: () => void
   beginDraw: (start: Point, type: ShapeType) => void
@@ -125,16 +125,36 @@ export function Canvas({
     if (activeTool === 'select') {
       const hit = findTopShapeAt(world, shapes)
       if (hit) {
-        if (!selectedIds.includes(hit.id)) selectShape(hit.id)
-        // Тащим либо всю текущую выборку (кликнули по уже выделенной фигуре),
-        // либо только ту фигуру, по которой кликнули.
-        const ids = selectedIds.includes(hit.id) ? selectedIds : [hit.id]
-        const originals: DragOriginal[] = shapes
-          .filter((shape) => ids.includes(shape.id))
-          .map(({ id, x, y }) => ({ id, x, y }))
-        draggingRef.current = true
-        setDragging(true)
-        beginDrag(world, originals)
+        // Модификаторы решают, как клик меняет выделение (как в Figma).
+        const selectMode: SelectMode =
+          event.metaKey || event.ctrlKey ? 'toggle' : event.shiftKey ? 'add' : 'replace'
+        const isAlreadySelected = selectedIds.includes(hit.id)
+
+        // Что поедет за курсором.
+        let dragIds: string[]
+        if (selectMode === 'toggle') {
+          // Ctrl/Cmd+клик только переключает фигуру и жест не начинает:
+          // «дёрнуть и отменить» не должен оставлять странное выделение.
+          selectShape(hit.id, 'toggle')
+          dragIds = []
+        } else if (isAlreadySelected) {
+          // Кликнули по уже выделенной фигуре — едет вся выборка целиком,
+          // и само выделение меняться не должно (иначе оно бы схлопнулось
+          // до одной фигуры прямо в момент начала перетаскивания).
+          dragIds = selectedIds
+        } else {
+          selectShape(hit.id, selectMode)
+          dragIds = selectMode === 'add' ? [...selectedIds, hit.id] : [hit.id]
+        }
+
+        if (dragIds.length > 0) {
+          const originals: DragOriginal[] = shapes
+            .filter((shape) => dragIds.includes(shape.id))
+            .map(({ id, x, y }) => ({ id, x, y }))
+          draggingRef.current = true
+          setDragging(true)
+          beginDrag(world, originals)
+        }
       } else {
         // Пустой клик — снимаем выделение.
         clearSelection()
@@ -276,7 +296,7 @@ export function Canvas({
       <div className="pointer-events-none absolute bottom-3 left-1/2 -translate-x-1/2 rounded-md border border-panel-border bg-panel-2/90 px-2.5 py-1 text-xs text-text-muted">
         {isShapeTool
           ? 'Тяните по холсту, чтобы нарисовать фигуру'
-          : 'Клик — выбрать · тащите фигуру — переместить · Пробел + мышь — панорама · колесо — зум'}
+          : 'Клик — выбрать · Shift/Ctrl — выборка · Delete — удалить · Пробел + мышь — панорама · колесо — зум'}
       </div>
       <div className="pointer-events-none absolute bottom-3 right-3 rounded-md bg-panel-2/90 px-2 py-1 text-xs tabular-nums text-text-main">
         {Math.round(zoom * 100)}%

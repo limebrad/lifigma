@@ -22,17 +22,30 @@ export interface UseHotkeysOptions {
   onUndo?: () => void
   /** Обработчик повтора (Ctrl/Cmd+Shift+Z или Ctrl/Cmd+Y). */
   onRedo?: () => void
+  /** Обработчик удаления выделенного (Delete / Backspace). */
+  onDelete?: () => void
+  /** Обработчик «выделить всё» (Ctrl/Cmd+A). */
+  onSelectAll?: () => void
+  /** Обработчик сброса выделения и отмены рисования (Escape). */
+  onEscape?: () => void
 }
 
-export function useHotkeys({ onSelectTool, onUndo, onRedo }: UseHotkeysOptions): void {
+export function useHotkeys({
+  onSelectTool,
+  onUndo,
+  onRedo,
+  onDelete,
+  onSelectAll,
+  onEscape,
+}: UseHotkeysOptions): void {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (isEditableTarget(event.target)) return
 
       const hasModifier = event.ctrlKey || event.metaKey
       if (hasModifier && !event.altKey) {
-        // Undo/redo тоже сравниваем по event.code: на русской раскладке
-        // Ctrl+Z даёт ключ 'я', а физический код остаётся 'KeyZ'.
+        // Undo/redo/delete/select-all тоже сравниваем по event.code: на русской
+        // раскладке Ctrl+Z даёт ключ 'я', а физический код остаётся 'KeyZ'.
         if (event.code === 'KeyZ' && !event.shiftKey) {
           // Ctrl/Cmd+Z — отменить.
           event.preventDefault()
@@ -45,9 +58,25 @@ export function useHotkeys({ onSelectTool, onUndo, onRedo }: UseHotkeysOptions):
           // Ctrl/Cmd+Y — повторить (альтернатива).
           event.preventDefault()
           onRedo?.()
+        } else if (event.code === 'KeyA') {
+          // Ctrl/Cmd+A — выделить всё (иначе браузер выделит текст страницы).
+          event.preventDefault()
+          onSelectAll?.()
         }
         // Остальные сочетания с модификаторами не превращаем в выбор
         // инструмента (например, Ctrl+R — перезагрузка страницы браузером).
+        return
+      }
+
+      // Delete/Backspace без модификаторов — удалить выделенное.
+      if (event.code === 'Delete' || event.code === 'Backspace') {
+        event.preventDefault()
+        onDelete?.()
+        return
+      }
+
+      if (event.code === 'Escape') {
+        onEscape?.()
         return
       }
 
@@ -60,5 +89,5 @@ export function useHotkeys({ onSelectTool, onUndo, onRedo }: UseHotkeysOptions):
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [onSelectTool, onUndo, onRedo])
+  }, [onSelectTool, onUndo, onRedo, onDelete, onSelectAll, onEscape])
 }

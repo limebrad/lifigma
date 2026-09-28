@@ -3,6 +3,7 @@
  * Само состояние (фигуры, инструмент, выделение) живёт в useShapes;
  * компоненты — тонкие и получают всё через пропсы.
  */
+import { useCallback } from 'react'
 import { Canvas } from './components/Canvas'
 import { LayersPanel } from './components/LayersPanel'
 import { PropertiesPanel } from './components/PropertiesPanel'
@@ -17,8 +18,10 @@ export function App() {
     setActiveTool,
     selectedIds,
     selectShape,
+    selectAll,
     clearSelection,
     updateShape,
+    removeShapes,
     draft,
     beginDraw,
     updateDraw,
@@ -31,8 +34,20 @@ export function App() {
     redo,
   } = useShapes()
 
-  // V / R / O — инструменты, Ctrl/Cmd+Z и Ctrl/Cmd+Shift+Z — отмена/повтор.
-  useHotkeys({ onSelectTool: setActiveTool, onUndo: undo, onRedo: redo })
+  // V / R / O — инструменты, Delete/Backspace — удалить выделенное,
+  // Ctrl/Cmd+A — выделить всё, Escape — сбросить выделение,
+  // Ctrl/Cmd+Z и Ctrl/Cmd+Shift+Z — отмена/повтор.
+  useHotkeys({
+    onSelectTool: setActiveTool,
+    onUndo: undo,
+    onRedo: redo,
+    onDelete: useCallback(() => removeShapes(selectedIds), [removeShapes, selectedIds]),
+    onSelectAll: selectAll,
+    onEscape: useCallback(() => {
+      cancelDraw()
+      clearSelection()
+    }, [cancelDraw, clearSelection]),
+  })
 
   const selectedShapes = shapes.filter((shape) => selectedIds.includes(shape.id))
 

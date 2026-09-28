@@ -8,7 +8,7 @@
  * Компоненты получают всё через пропсы и не знают, как хранится состояние.
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { DraftShape, Point, Shape, ShapeType, Tool } from '../types/shape'
+import type { DraftShape, Point, SelectMode, Shape, ShapeType, Tool } from '../types/shape'
 
 function createId(): string {
   return `shape-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
@@ -39,10 +39,12 @@ export interface UseShapes {
   selectedIds: string[]
   /** Черновик фигуры, которая рисуется прямо сейчас (null — рисования нет). */
   draft: DraftShape | null
-  addShape: (shape: Omit<Shape, 'id'>) => string
   updateShape: (id: string, patch: Partial<Omit<Shape, 'id'>>) => void
-  removeShape: (id: string) => void
-  selectShape: (id: string, additive?: boolean) => void
+  /** Удалить несколько фигур одним шагом истории (Delete / Backspace). */
+  removeShapes: (ids: string[]) => void
+  selectShape: (id: string, mode?: SelectMode) => void
+  /** Выделить все фигуры холста (Ctrl/Cmd+A). */
+  selectAll: () => void
   clearSelection: () => void
   /** Начать рисование: зафиксировать точку старта и тип фигуры. */
   beginDraw: (start: Point, type: ShapeType) => void
@@ -101,6 +103,9 @@ export function useShapes(): UseShapes {
     setShapes(previous)
     setDraft(null)
     draftRef.current = null
+    // Перетаскивание, начатое до отмены, больше не имеет смысла: его
+    // «изначальные позиции» уже не соответствуют состоянию.
+    dragRef.current = null
     // Убираем из выделения фигуры, которых больше нет в состоянии.
     setSelectedIds((prev) => prev.filter((id) => previous.some((shape) => shape.id === id)))
   }, [])
@@ -113,15 +118,9 @@ export function useShapes(): UseShapes {
     setShapes(next)
     setDraft(null)
     draftRef.current = null
+    dragRef.current = null
     setSelectedIds((prev) => prev.filter((id) => next.some((shape) => shape.id === id)))
   }, [])
-
-  const addShape = useCallback((shape: Omit<Shape, 'id'>): string => {
-    pushHistory()
-    const id = createId()
-    setShapes((prev) => [...prev, { ...shape, id }])
-    return id
-  }, [pushHistory])
 
   const updateShape = useCallback((id: string, patch: Partial<Omit<Shape, 'id'>>) => {
     const shape = shapesRef.current.find((item) => item.id === id)
@@ -135,18 +134,29 @@ export function useShapes(): UseShapes {
     setShapes((prev) => prev.map((item) => (item.id === id ? { ...item, ...patch } : item)))
   }, [pushHistory])
 
-  const removeShape = useCallback((id: string) => {
-    if (!shapesRef.current.some((shape) => shape.id === id)) return
+  // Удаление пачкой: один вызов — один снимок истории, поэтому стёртые
+  // Ctrl+Z возвращает все фигуры разом, а не по одной за нажатие.
+  const removeShapes = useCallback((ids: string[]) => {
+    if (ids.length === 0) return
+    // Фильтруем по актуальному состоянию: часть id могла уже исчезнуть.
+    const doomed = new Set(ids.filter((id) => shapesRef.current.some((shape) => shape.id === id)))
+    if (doomed.size === 0) return
     pushHistory()
-    setShapes((prev) => prev.filter((shape) => shape.id !== id))
-    setSelectedIds((prev) => prev.filter((selectedId) => selectedId !== id))
+    setShapes((prev) => prev.filter((shape) => !doomed.has(shape.id)))
+    setSelectedIds((prev) => prev.filter((selectedId) => !doomed.has(selectedId)))
   }, [pushHistory])
 
-  const selectShape = useCallback((id: string, additive = false) => {
+  const selectShape = useCallback((id: string, mode: SelectMode = 'replace') => {
     setSelectedIds((prev) => {
-      if (additive) return prev.includes(id) ? prev : [...prev, id]
-      return [id]
+      if (mode === 'replace') return [id]
+      if (mode === 'add') return prev.includes(id) ? prev : [...prev, id]
+      // toggle: повторный Ctrl/Cmd+клик снимает фигуру с выделения.
+      return prev.includes(id) ? prev.filter((selectedId) => selectedId !== id) : [...prev, id]
     })
+  }, [])
+
+  const selectAll = useCallback(() => {
+    setSelectedIds(shapesRef.current.map((shape) => shape.id))
   }, [])
 
   const clearSelection = useCallback(() => setSelectedIds([]), [])
@@ -204,17 +214,25 @@ export function useShapes(): UseShapes {
   // Реф нужен по той же причине, что и draftRef, — pointermove приходит чаще,
   // чем перерисовка, и обработчик обязан видеть актуальные данные без
   // устаревших замыканий.
-  const dragRef = useRef<{ start: Point; originals: Map<string, DragOriginal> } | null>(null)
+  const dragRef = useRef<{
+    start: Point
+    originals: Map<string, DragOriginal>
+    /** Снимок истории уже снят — состояние действительно поменялось. */
+    historyPushed: boolean
+  } | null>(null)
 
   const beginDrag = useCallback((start: Point, originals: DragOriginal[]) => {
     if (originals.length === 0) return
-    // Один снимок на всё перетаскивание: кадры pointermove историю не засоряют.
-    pushHistory()
+    // Снимок НЕ снимаем здесь: клик по фигуре без перетаскивания ничего не
+    // меняет. Раньше historyPushed делалось здесь, и простой клик по уже
+    // выделенной фигуре оставлял «пустой» шаг истории: Ctrl+Z не менял
+    // ничего, но съедал нажатие, а redo-ветка при этом затиралась.
     dragRef.current = {
       start,
       originals: new Map(originals.map((original) => [original.id, original])),
+      historyPushed: false,
     }
-  }, [pushHistory])
+  }, [])
 
   const updateDrag = useCallback((current: Point) => {
     const drag = dragRef.current
@@ -223,6 +241,12 @@ export function useShapes(): UseShapes {
     // позиций — так выделение движется «как единое целое».
     const dx = current.x - drag.start.x
     const dy = current.y - drag.start.y
+    if (dx === 0 && dy === 0) return
+    // Один снимок на всё перетаскивание: кадры pointermove историю не засоряют.
+    if (!drag.historyPushed) {
+      pushHistory()
+      drag.historyPushed = true
+    }
     setShapes((prev) =>
       prev.map((shape) => {
         const original = drag.originals.get(shape.id)
@@ -230,7 +254,7 @@ export function useShapes(): UseShapes {
         return { ...shape, x: original.x + dx, y: original.y + dy }
       }),
     )
-  }, [])
+  }, [pushHistory])
 
   const endDrag = useCallback(() => {
     dragRef.current = null
@@ -242,10 +266,10 @@ export function useShapes(): UseShapes {
     setActiveTool,
     selectedIds,
     draft,
-    addShape,
     updateShape,
-    removeShape,
+    removeShapes,
     selectShape,
+    selectAll,
     clearSelection,
     beginDraw,
     updateDraw,

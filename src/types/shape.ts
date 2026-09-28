@@ -22,6 +22,14 @@ export type ShapeType = 'rectangle' | 'ellipse'
 /** Инструменты левой панели. */
 export type Tool = 'select' | 'rectangle' | 'ellipse'
 
+/**
+ * Как клик по фигуре меняет выделение.
+ *   replace — оставить только эту фигуру (обычный клик);
+ *   add     — добавить к текущему выделению (Shift + клик);
+ *   toggle  — добавить, если её нет, и снять, если уже есть (Ctrl/Cmd + клик).
+ */
+export type SelectMode = 'replace' | 'add' | 'toggle'
+
 /** Одна фигура на холсте. */
 export interface Shape {
   id: string
