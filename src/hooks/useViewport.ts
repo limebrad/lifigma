@@ -12,6 +12,7 @@ import type { PointerEvent as ReactPointerEvent } from 'react'
 import type { Point, Size } from '../types/shape'
 import { clamp, zoomAt } from '../utils/geometry'
 import type { Viewport } from '../utils/geometry'
+import { isEditableTarget } from '../utils/dom'
 
 /** Минимальный зум: 10%. */
 export const MIN_ZOOM = 0.1
@@ -68,8 +69,10 @@ export function useViewport(): ViewportApi {
   // Пробел — переключатель режима «рука» (глобально, т.к. панорамировать
   // можно, начав движение ещё над панелями нельзя, но захват мыши уже держим).
   useEffect(() => {
+    // Пробел в поле ввода (например, в цвете `rgb(1 2 3)`) — это пробел
+    // пользователя, а не панорама: такой перехват ломал ввод в панели свойств.
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.code !== 'Space') return
+      if (event.code !== 'Space' || isEditableTarget(event.target)) return
       event.preventDefault()
       if (!event.repeat) {
         spaceDownRef.current = true
@@ -81,11 +84,23 @@ export function useViewport(): ViewportApi {
       spaceDownRef.current = false
       setSpaceDown(false)
     }
+    // keyup может не прийти: пользователь переключил окно или потерял фокус
+    // при зажатом пробеле. Без сброса spaceDown «залипал» и обычный клик
+    // левой кнопкой начинал панорамировать вместо выделения фигуры.
+    const handleBlur = () => {
+      spaceDownRef.current = false
+      panningRef.current = false
+      lastPointRef.current = null
+      setSpaceDown(false)
+      setPanning(false)
+    }
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
+    window.addEventListener('blur', handleBlur)
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
+      window.removeEventListener('blur', handleBlur)
     }
   }, [])
 

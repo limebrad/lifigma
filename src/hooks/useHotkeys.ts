@@ -13,6 +13,7 @@
 import { useEffect } from 'react'
 import { getToolByCode, getToolByKey } from '../constants/tools'
 import type { Tool } from '../types/shape'
+import { isEditableTarget } from '../utils/dom'
 
 export interface UseHotkeysOptions {
   /** Переключить активный инструмент. */
@@ -21,12 +22,6 @@ export interface UseHotkeysOptions {
   onUndo?: () => void
   /** Обработчик повтора (Ctrl/Cmd+Shift+Z или Ctrl/Cmd+Y). */
   onRedo?: () => void
-}
-
-/** Событие пришло из текстового поля — горячие клавиши не трогаем. */
-function isEditableTarget(target: EventTarget | null): boolean {
-  if (!(target instanceof HTMLElement)) return false
-  return target.isContentEditable || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA'
 }
 
 export function useHotkeys({ onSelectTool, onUndo, onRedo }: UseHotkeysOptions): void {
