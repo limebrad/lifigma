@@ -77,6 +77,8 @@ export interface UseShapes {
   updateDrag: (current: Point) => void
   /** Завершить перетаскивание: позиции уже зафиксированы в состоянии. */
   endDrag: () => void
+  /** Отменить прерванное перетаскивание: фигуры вернутся на исходные места. */
+  cancelDrag: () => void
   /** Отменить последнее изменение (Ctrl/Cmd+Z). */
   undo: () => void
   /** Повторить отменённое изменение (Ctrl/Cmd+Shift+Z). */
@@ -298,6 +300,28 @@ export function useShapes(): UseShapes {
     dragRef.current = null
   }, [])
 
+  // Перетаскивание, прерванное системой (pointercancel, потеря захвата):
+  // возвращаем фигуры на стартовые позиции. Раньше прерванный drag «оставался»
+  // на новом месте, тогда как прерванное рисование честно отменялось —
+  // исход прерывания был один, а результат разный.
+  const cancelDrag = useCallback(() => {
+    const drag = dragRef.current
+    if (!drag) return
+    if (drag.historyPushed) {
+      commitShapes(
+        shapesRef.current.map((shape) => {
+          const original = drag.originals.get(shape.id)
+          if (!original) return shape
+          return { ...shape, x: original.x, y: original.y }
+        }),
+      )
+      // Снимок истории, снятый в начале перетаскивания, больше не нужен:
+      // перемещения не состоялось, откатывать его неоткуда.
+      pastRef.current.pop()
+    }
+    dragRef.current = null
+  }, [commitShapes])
+
   return {
     shapes,
     activeTool,
@@ -316,6 +340,7 @@ export function useShapes(): UseShapes {
     beginDrag,
     updateDrag,
     endDrag,
+    cancelDrag,
     undo,
     redo,
   }

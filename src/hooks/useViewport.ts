@@ -15,11 +15,21 @@ import type { Viewport } from '../utils/geometry'
 import { isEditableTarget } from '../utils/dom'
 
 /** Минимальный зум: 10%. */
-export const MIN_ZOOM = 0.1
+const MIN_ZOOM = 0.1
 /** Максимальный зум: 400%. */
-export const MAX_ZOOM = 4
-/** Множитель зума на один «щелчок» колеса. */
-const ZOOM_STEP = 1.15
+const MAX_ZOOM = 4
+/**
+ * Чувствительность зума к колесу: множитель равен exp(-deltaY * ZOOM_SENSITIVITY).
+ * Раньше был фиксированный шаг 1.15 на КАЖДОЕ wheel-событие, из-за чего
+ * двупальцевый скролл тачпада (десятки событий за один жест, 1.15^15 ≈ 8.4)
+ * мгновенно упирался в максимум 400%. Экспонента по величине прокрутки
+ * сохраняет привычные ~15% на щелчок мыши и делает тачпад управляемым.
+ */
+const ZOOM_SENSITIVITY = 0.0015
+/** Высота строки текста — для нормализации deltaMode === 1. */
+const LINE_HEIGHT = 16
+/** Высота страницы — для нормализации deltaMode === 2. */
+const PAGE_HEIGHT = 800
 
 export interface ViewportApi {
   /** Ref на DOM холста: сюда вешаем колесо и меряем размер области. */
@@ -32,8 +42,6 @@ export interface ViewportApi {
   spaceDown: boolean
   /** Идёт ли панорамирование прямо сейчас. */
   panning: boolean
-  /** CSS-курсор для области холста. */
-  cursor: string
   startPanning: (event: ReactPointerEvent<HTMLDivElement>) => void
   movePanning: (event: ReactPointerEvent<HTMLDivElement>) => void
   stopPanning: (event: ReactPointerEvent<HTMLDivElement>) => void
@@ -117,10 +125,19 @@ export function useViewport(): ViewportApi {
     if (!el) return
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault()
+      // Приводим прокрутку к пикселям: Firefox в DOM_DELTA_LINE даёт строки,
+      // в DOM_DELTA_PAGE — страницы, и без нормализации зум скачет на два
+      // порядка в зависимости от браузера.
+      const pixels =
+        event.deltaMode === 1
+          ? event.deltaY * LINE_HEIGHT
+          : event.deltaMode === 2
+            ? event.deltaY * PAGE_HEIGHT
+            : event.deltaY
+      if (pixels === 0) return
       const anchor = toLocal(event.clientX, event.clientY)
       setViewport((current) => {
-        const factor = event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP
-        const nextZoom = clamp(current.zoom * factor, MIN_ZOOM, MAX_ZOOM)
+        const nextZoom = clamp(current.zoom * Math.exp(-pixels * ZOOM_SENSITIVITY), MIN_ZOOM, MAX_ZOOM)
         if (nextZoom === current.zoom) return current
         return zoomAt(current, nextZoom, anchor, viewportSize)
       })
@@ -170,15 +187,15 @@ export function useViewport(): ViewportApi {
     }
   }, [])
 
-  const cursor = panning ? 'grabbing' : spaceDown ? 'grab' : 'default'
-
+  // Курсор намеренно НЕ отдаётся отсюда: Canvas считает его с учётом
+  // активного инструмента и перетаскивания, и его собственное значение
+  // всегда было полнее. Раньше хук отдавал курсор, который никто не читал.
   return {
     containerRef,
     viewport,
     viewportSize,
     spaceDown,
     panning,
-    cursor,
     startPanning,
     movePanning,
     stopPanning,

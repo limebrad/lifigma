@@ -40,6 +40,8 @@ export interface CanvasProps {
   updateDrag: (current: Point) => void
   /** Завершить перетаскивание. */
   endDrag: () => void
+  /** Отменить прерванное перетаскивание: фигуры вернутся на исходные места. */
+  cancelDrag: () => void
 }
 
 /** Размер ячейки мелкой сетки в мировых единицах. */
@@ -65,6 +67,7 @@ export function Canvas({
   beginDrag,
   updateDrag,
   endDrag,
+  cancelDrag,
 }: CanvasProps) {
   const {
     containerRef,
@@ -89,14 +92,15 @@ export function Canvas({
   const cell = GRID_SIZE * zoom
   const majorCell = GRID_SIZE * MAJOR_EVERY * zoom
 
-  // Сдвиг рисунка сетки, чтобы её линии совпадали с мировыми координатами.
-  const offsetX = viewport.x * zoom - width / 2
-  const offsetY = viewport.y * zoom - height / 2
-  const gridPosition = `${offsetX}px ${offsetY}px`
-
   // Экранные позиции мировых осей X = 0 и Y = 0.
+  // Сетка обязана начинаться отсюда же: её первая линия — это линия мира 0.
+  // Раньше сдвиг считался как viewport.x * zoom - width / 2, то есть ровно
+  // с противоположным знаком: сетка отражалась относительно центра экрана
+  // и совпадала с началом координат только пока ширина экрана была кратна
+  // шагу сетки, а после любой панорамы линии уезжали от осей.
   const axisX = width / 2 - viewport.x * zoom
   const axisY = height / 2 - viewport.y * zoom
+  const gridPosition = `${axisX}px ${axisY}px`
 
   const isShapeTool = activeTool === 'rectangle' || activeTool === 'ellipse'
 
@@ -198,7 +202,8 @@ export function Canvas({
     }
   }
 
-  // Жест прерван системой (pointercancel): рисование отменяем, перемещение завершаем.
+  // Жест прерван системой (pointercancel): и рисование, и перемещение
+  // отменяются одинаково — прерванное действие не должно оставлять следов.
   const handlePointerCancel = (event: ReactPointerEvent<HTMLDivElement>) => {
     stopPanning(event)
 
@@ -208,7 +213,7 @@ export function Canvas({
     } else if (draggingRef.current) {
       draggingRef.current = false
       setDragging(false)
-      endDrag()
+      cancelDrag()
     }
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId)

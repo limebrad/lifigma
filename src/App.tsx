@@ -30,6 +30,7 @@ export function App() {
     beginDrag,
     updateDrag,
     endDrag,
+    cancelDrag,
     undo,
     redo,
   } = useShapes()
@@ -71,6 +72,7 @@ export function App() {
           beginDrag={beginDrag}
           updateDrag={updateDrag}
           endDrag={endDrag}
+          cancelDrag={cancelDrag}
         />
       </main>
 
