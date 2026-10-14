@@ -1,6 +1,6 @@
 /**
  * src/components/ui/FigmaLogo.tsx — знак Figma (в оригинальной палитре) и
- * подпись «desktop-figma». Логотип используется как референс на продукт.
+ * подпись «Мини Фигма». Логотип используется как референс на продукт.
  */
 
 type LogoMarkProps = {
@@ -34,7 +34,7 @@ export function FigmaLogo({ className = '' }: LogoProps) {
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <FigmaLogoMark className="h-7 w-auto" />
       <span className="text-[17px] font-extrabold tracking-tight text-ink">
-        desktop-figma
+        Мини Фигма
       </span>
     </span>
   )

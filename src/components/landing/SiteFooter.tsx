@@ -108,7 +108,7 @@ export function SiteFooter() {
             .
           </p>
           <p className="mt-4 text-[13px] text-faint">
-            © {new Date().getFullYear()} desktop-figma landing
+            © {new Date().getFullYear()} Мини Фигма
           </p>
         </div>
       </Container>

@@ -28,7 +28,7 @@ export function SiteHeader() {
         <a
           href="#top"
           className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet focus-visible:ring-offset-2"
-          aria-label="Figma на компьютере — на главную"
+          aria-label="Мини Фигма — на главную"
         >
           <FigmaLogo />
         </a>
