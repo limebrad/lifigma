@@ -18,9 +18,9 @@ export function Faq() {
       <Container>
         <Reveal className="flex justify-center">
           <SectionHeading
-            eyebrow="FAQ"
-            title="Частые вопросы"
-            description="Коротко о том, что такое desktop-figma и как его установить."
+            eyebrow="Вопросы"
+            title="Отвечаем на главное"
+            description="Коротко о том, зачем ставить приложение и как это сделать."
           />
         </Reveal>
 

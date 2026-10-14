@@ -21,10 +21,11 @@ export function FinalCta() {
       <Container>
         <Reveal className="relative flex flex-col items-center text-center">
           <h2 className="max-w-3xl text-balance text-4xl font-extrabold leading-[1.06] tracking-[-0.03em] sm:text-5xl md:text-[56px]">
-            Твои идеи заслуживают воплощения
+            Перестань искать Figma среди вкладок
           </h2>
           <p className="mt-5 max-w-xl text-pretty text-lg leading-relaxed text-white/70">
-            Скачай desktop-figma и преврати задумки в реальные дизайн-проекты.
+            Скачай приложение для macOS или Windows — и открывай проекты одним кликом с рабочего
+            стола. Файлы и аккаунт те же, что и в браузере.
           </p>
 
           <div className="mt-9">
@@ -40,11 +41,13 @@ export function FinalCta() {
                 />
               }
             >
-              Скачать Figma Desktop
+              Скачать приложение Figma
             </Button>
           </div>
 
-          <p className="mt-5 text-sm text-white/60">Официальная загрузка с сайта Figma</p>
+          <p className="mt-5 text-sm text-white/60">
+            Откроется официальная страница загрузок figma.com
+          </p>
         </Reveal>
       </Container>
     </section>

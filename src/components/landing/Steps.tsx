@@ -16,8 +16,8 @@ export function Steps() {
         <Reveal className="flex justify-center">
           <SectionHeading
             eyebrow="Как начать"
-            title="Три шага до первого проекта"
-            description="От загрузки до первого макета — установка занимает пару минут."
+            title="От загрузки до первого макета — за пару минут"
+            description="Никаких сложных настроек: скачал, установил, вошёл в аккаунт — и можно начинать."
           />
         </Reveal>
 

@@ -21,9 +21,9 @@ export function Audience() {
       <Container>
         <Reveal className="flex justify-center">
           <SectionHeading
-            eyebrow="Аудитория"
-            title="Для кого подойдёт Figma Desktop"
-            description="Инструмент масштабируется вместе с задачами — от первого макета до продуктовой команды."
+            eyebrow="Кому подойдёт"
+            title="Пригодится и новичку, и большой команде"
+            description="Одна Figma закрывает задачи на любом уровне — от первого макета до продукта в разработке."
           />
         </Reveal>
 

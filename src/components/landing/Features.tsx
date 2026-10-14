@@ -11,7 +11,7 @@ import { SectionHeading } from '../ui/SectionHeading'
 
 const ACCENTS: Record<FeatureIcon, { chip: string; glyph: string }> = {
   window: { chip: 'bg-brand-violet/12', glyph: '#a259ff' },
-  layout: { chip: 'bg-brand-blue/12', glyph: '#0e9fd6' },
+  type: { chip: 'bg-brand-blue/12', glyph: '#0e9fd6' },
   users: { chip: 'bg-brand-green/12', glyph: '#0a9d68' },
   prototype: { chip: 'bg-brand-orange/12', glyph: '#e5533d' },
 }
@@ -22,9 +22,9 @@ export function Features() {
       <Container>
         <Reveal className="flex justify-center">
           <SectionHeading
-            eyebrow="Преимущества"
-            title="Больше возможностей для твоих идей"
-            description="Настольная версия переносит знакомую Figma в отдельное окно на компьютере — так удобнее держать фокус на проекте."
+            eyebrow="Зачем приложение"
+            title="Настольная версия — это удобнее"
+            description="Та же Figma, но заточенная под долгую работу на компьютере: отдельное окно вместо вкладки, локальные шрифты и общие файлы с веб-версией."
           />
         </Reveal>
 

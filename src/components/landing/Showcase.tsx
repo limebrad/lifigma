@@ -15,8 +15,8 @@ export function Showcase() {
         <Reveal className="flex justify-center">
           <SectionHeading
             eyebrow="Возможности"
-            title="Твоё рабочее пространство для дизайна"
-            description="Всё, что нужно для работы над продуктом: макеты, компоненты и прототипы в одном файле."
+            title="Всё для продукта — в одной Figma"
+            description="Макеты, дизайн-система и прототипы живут в одном файле и работают одинаково в приложении и в браузере."
           />
         </Reveal>
 

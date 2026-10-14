@@ -15,8 +15,8 @@ export function SiteFooter() {
           <div>
             <FigmaLogo />
             <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-muted">
-              Промостраница о настольном приложении Figma. Помогаем разобраться, зачем нужна
-              desktop-версия и как её установить на компьютер.
+              Промостраница о настольном приложении Figma: рассказываем, зачем ставить его на
+              компьютер и как это сделать за пару минут.
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <a
@@ -25,7 +25,7 @@ export function SiteFooter() {
                 rel="noreferrer noopener"
                 className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-paper px-4 py-2 text-sm font-medium text-ink transition-colors hover:border-ink hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet focus-visible:ring-offset-2"
               >
-                Скачать
+                Скачать приложение
                 <Icon name="download" className="h-4 w-4" />
               </a>
             </div>

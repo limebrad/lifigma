@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 
 export type IconName =
   | 'window'
+  | 'type'
   | 'layout'
   | 'users'
   | 'prototype'
@@ -34,6 +35,12 @@ const PATHS: Record<IconName, ReactNode> = {
       <rect x="13.5" y="3.5" width="7" height="11" rx="1.6" />
       <rect x="3.5" y="13.5" width="7" height="7" rx="1.6" />
       <rect x="13.5" y="17.5" width="7" height="3" rx="1.4" />
+    </>
+  ),
+  type: (
+    <>
+      <path d="M5 19 11 5l6 14" />
+      <path d="M7 14.5h8" />
     </>
   ),
   users: (

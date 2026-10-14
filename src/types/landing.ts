@@ -8,7 +8,7 @@ export type NavLink = {
   label: string
 }
 
-export type FeatureIcon = 'window' | 'layout' | 'users' | 'prototype'
+export type FeatureIcon = 'window' | 'type' | 'users' | 'prototype'
 
 export type Feature = {
   id: string

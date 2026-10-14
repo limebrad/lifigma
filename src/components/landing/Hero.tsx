@@ -9,7 +9,12 @@ import { Icon } from '../ui/Icon'
 import { Reveal } from '../ui/Reveal'
 import { EditorWindow } from '../visuals/EditorWindow'
 
-const META = ['macOS и Windows', 'Бесплатный стартовый план', 'Общие файлы с веб-версией']
+const META = [
+  'macOS и Windows',
+  'Бесплатное скачивание',
+  'Локальные шрифты',
+  'Общие файлы с веб-версией',
+]
 
 export function Hero() {
   return (
@@ -31,16 +36,17 @@ export function Hero() {
             </span>
 
             <h1 className="mt-6 text-[40px] font-extrabold leading-[1.05] tracking-[-0.03em] text-ink sm:text-[56px] lg:text-[64px]">
-              Твори. Проектируй.
+              Figma — отдельным
               <br />
               <span className="bg-[linear-gradient(100deg,#a259ff,#1abcfe)] bg-clip-text text-transparent">
-                Воплощай идеи.
+                приложением на компьютере
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted">
-              desktop-figma — пространство для создания интерфейсов, прототипов и совместной
-              работы над дизайн-проектами прямо на компьютере.
+              Настольная версия для macOS и Windows: отдельное окно вместо вкладки браузера и
+              поддержка шрифтов, установленных на компьютере. Файлы и аккаунт — те же, что и в
+              веб-версии.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -55,13 +61,13 @@ export function Hero() {
                   />
                 }
               >
-                Скачать desktop-figma
+                Скачать приложение Figma
               </Button>
               <a
                 href="#features"
                 className="group inline-flex h-13 items-center justify-center gap-2 rounded-full px-6 text-base font-semibold text-ink transition-colors duration-200 hover:bg-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet focus-visible:ring-offset-2"
               >
-                Узнать о преимуществах
+                Посмотреть возможности
                 <Icon
                   name="arrowRight"
                   className="h-5 w-5 text-muted transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-ink"
@@ -70,7 +76,7 @@ export function Hero() {
             </div>
 
             <p className="mt-5 text-sm text-faint">
-              Официальная загрузка с сайта{' '}
+              Откроется официальная страница загрузок{' '}
               <a
                 href={FIGMA_URLS.downloads}
                 target="_blank"

@@ -28,7 +28,7 @@ export function SiteHeader() {
         <a
           href="#top"
           className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet focus-visible:ring-offset-2"
-          aria-label="desktop-figma — на главную"
+          aria-label="Figma на компьютере — на главную"
         >
           <FigmaLogo />
         </a>
@@ -102,7 +102,7 @@ export function SiteHeader() {
             className="mt-3 w-full"
             icon={<Icon name="download" className="h-5 w-5" />}
           >
-            Скачать desktop-figma
+            Скачать приложение
           </Button>
         </Container>
       </div>
