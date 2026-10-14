@@ -1,90 +1,43 @@
 /**
- * src/App.tsx — собирает холст и три панели.
- * Само состояние (фигуры, инструмент, выделение) живёт в useShapes;
- * компоненты — тонкие и получают всё через пропсы.
+ * src/App.tsx — собирает посадочную страницу desktop-figma из секций.
+ *
+ * Прежний редактор mini-figma остался в src/components, hooks, types, utils
+ * и constants — здесь он больше не подключается, но исходники не удалены.
  */
-import { useCallback } from 'react'
-import { Canvas } from './components/Canvas'
-import { LayersPanel } from './components/LayersPanel'
-import { PropertiesPanel } from './components/PropertiesPanel'
-import { Toolbar } from './components/Toolbar'
-import { useHotkeys } from './hooks/useHotkeys'
-import { useShapes } from './hooks/useShapes'
+import { Audience } from './components/landing/Audience'
+import { Faq } from './components/landing/Faq'
+import { Features } from './components/landing/Features'
+import { FinalCta } from './components/landing/FinalCta'
+import { Hero } from './components/landing/Hero'
+import { Showcase } from './components/landing/Showcase'
+import { SiteFooter } from './components/landing/SiteFooter'
+import { SiteHeader } from './components/landing/SiteHeader'
+import { Steps } from './components/landing/Steps'
 
 export function App() {
-  const {
-    shapes,
-    activeTool,
-    setActiveTool,
-    selectedIds,
-    selectShape,
-    selectAll,
-    clearSelection,
-    updateShape,
-    removeShapes,
-    draft,
-    beginDraw,
-    updateDraw,
-    endDraw,
-    cancelDraw,
-    beginDrag,
-    updateDrag,
-    endDrag,
-    cancelDrag,
-    undo,
-    redo,
-  } = useShapes()
-
-  // V / R / O — инструменты, Delete/Backspace — удалить выделенное,
-  // Ctrl/Cmd+A — выделить всё, Escape — сбросить выделение,
-  // Ctrl/Cmd+Z и Ctrl/Cmd+Shift+Z — отмена/повтор.
-  useHotkeys({
-    onSelectTool: setActiveTool,
-    onUndo: undo,
-    onRedo: redo,
-    onDelete: useCallback(() => removeShapes(selectedIds), [removeShapes, selectedIds]),
-    onSelectAll: selectAll,
-    onEscape: useCallback(() => {
-      cancelDraw()
-      clearSelection()
-    }, [cancelDraw, clearSelection]),
-  })
-
-  const selectedShapes = shapes.filter((shape) => selectedIds.includes(shape.id))
-
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-canvas-bg text-text-main">
-      <Toolbar activeTool={activeTool} onSelectTool={setActiveTool} />
+    <div id="top" className="flex min-h-screen flex-col bg-paper text-ink">
+      {/* Ссылка для быстрого перехода к контенту с клавиатуры */}
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-5 focus:py-2.5 focus:text-sm focus:font-semibold focus:text-paper focus:outline-none focus:ring-2 focus:ring-brand-violet focus:ring-offset-2"
+      >
+        Перейти к содержимому
+      </a>
 
-      {/* Холст занимает всё оставшееся пространство */}
-      <main className="relative min-w-0 flex-1">
-        <Canvas
-          shapes={shapes}
-          activeTool={activeTool}
-          selectedIds={selectedIds}
-          draft={draft}
-          selectShape={selectShape}
-          clearSelection={clearSelection}
-          beginDraw={beginDraw}
-          updateDraw={updateDraw}
-          endDraw={endDraw}
-          cancelDraw={cancelDraw}
-          beginDrag={beginDrag}
-          updateDrag={updateDrag}
-          endDrag={endDrag}
-          cancelDrag={cancelDrag}
-        />
+      <SiteHeader />
+
+      <main id="main" className="flex-1">
+        <Hero />
+        <Features />
+        <Steps />
+        <Showcase />
+        <Audience />
+        <Faq />
+        <FinalCta />
       </main>
 
-      {/* Правая колонка: свойства сверху, слои снизу */}
-      <aside className="flex w-64 shrink-0 flex-col border-l border-panel-border bg-panel">
-        <PropertiesPanel selectedShapes={selectedShapes} onUpdateShape={updateShape} />
-        <LayersPanel
-          shapes={shapes}
-          selectedIds={selectedIds}
-          onSelectShape={(id) => selectShape(id)}
-        />
-      </aside>
+      <SiteFooter />
     </div>
   )
 }

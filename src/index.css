@@ -1,8 +1,36 @@
 @import 'tailwindcss';
 
 /*
- * Дизайн-токены проекта (Tailwind CSS v4, сгенерирует утилиты вида
- * bg-canvas-bg, bg-panel-2, text-text-muted, border-panel-border, bg-accent/15).
+ * Дизайн-токены лендинга desktop-figma (Tailwind CSS v4).
+ * Из них Tailwind сгенерирует утилиты вида bg-ink, text-muted, border-line,
+ * bg-brand-violet и т. д.
+ */
+@theme {
+  --font-sans:
+    'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Нейтральная база: светлая, контрастная, без лишнего декора */
+  --color-ink: #0d0d0d;
+  --color-ink-2: #1b1b1b;
+  --color-muted: #6f6f6f;
+  --color-faint: #a0a0a0;
+  --color-paper: #ffffff;
+  --color-mist: #f7f7f7;
+  --color-mist-2: #f1f1f1;
+  --color-line: #ebebeb;
+  --color-line-2: #dcdcdc;
+
+  /* Фирменные акценты Figma */
+  --color-brand-violet: #a259ff;
+  --color-brand-blue: #1abcfe;
+  --color-brand-green: #0acf83;
+  --color-brand-orange: #ff7262;
+  --color-brand-red: #f24e1e;
+}
+
+/*
+ * LEGACY: токены прежнего редактора mini-figma. Оставлены, чтобы исходники
+ * src/components линтера/сборки по-прежнему находили свои утилиты.
  */
 @theme {
   --color-canvas-bg: #0e0c16;
@@ -15,16 +43,82 @@
   --color-accent: #7c6cff;
 }
 
-html,
-body,
-#root {
-  height: 100%;
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
-  overflow: hidden;
-  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Якоря не заезжают под липкий хедер */
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+/* --- Появление блоков при прокрутке ------------------------------------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Аккордеон FAQ ------------------------------------------------------ */
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.accordion-panel[data-open='true'] {
+  grid-template-rows: 1fr;
+}
+
+.accordion-panel > div {
+  overflow: hidden;
+}
+
+/* --- Мягкое парение визуала -------------------------------------------- */
+@keyframes float-soft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float-soft 7s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .animate-float {
+    animation: none;
+  }
 }
