@@ -2,7 +2,7 @@
  * src/components/landing/FinalCta.tsx — выразительный финальный призыв
  * к действию на тёмном фоне.
  */
-import { FIGMA_URLS } from '../../constants/landing'
+import { EDITOR_URL } from '../../constants/landing'
 import { Button } from '../ui/Button'
 import { Container } from '../ui/Container'
 import { Icon } from '../ui/Icon'
@@ -21,32 +21,31 @@ export function FinalCta() {
       <Container>
         <Reveal className="relative flex flex-col items-center text-center">
           <h2 className="max-w-3xl text-balance text-4xl font-extrabold leading-[1.06] tracking-[-0.03em] sm:text-5xl md:text-[56px]">
-            Перестань искать Figma среди вкладок
+            Открой редактор — он уже готов
           </h2>
           <p className="mt-5 max-w-xl text-pretty text-lg leading-relaxed text-white/70">
-            Скачай приложение для macOS или Windows — и открывай проекты одним кликом с рабочего
-            стола. Файлы и аккаунт те же, что и в браузере.
+            Ни установки, ни регистрации: нажми кнопку — и рисуй фигуры. Всё работает прямо в
+            браузере.
           </p>
 
           <div className="mt-9">
             <Button
-              href={FIGMA_URLS.downloads}
-              external
+              href={EDITOR_URL}
               variant="light"
               size="lg"
               icon={
                 <Icon
-                  name="download"
-                  className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-0.5"
+                  name="arrowRight"
+                  className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5"
                 />
               }
             >
-              Скачать приложение Figma
+              Открыть редактор
             </Button>
           </div>
 
           <p className="mt-5 text-sm text-white/60">
-            Откроется официальная страница загрузок figma.com
+            Редактор откроется в этом же окне. Вернуться на главную можно по ссылке вверху редактора.
           </p>
         </Reveal>
       </Container>

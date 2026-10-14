@@ -22,8 +22,8 @@ export function Audience() {
         <Reveal className="flex justify-center">
           <SectionHeading
             eyebrow="Кому подойдёт"
-            title="Пригодится и новичку, и большой команде"
-            description="Одна Figma закрывает задачи на любом уровне — от первого макета до продукта в разработке."
+            title="Тем, кто учится и учит"
+            description="Мини Фигма — учебный проект. Он пригодится, если хочется понять, как устроен графический редактор изнутри."
           />
         </Reveal>
 

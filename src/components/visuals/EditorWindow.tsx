@@ -1,63 +1,44 @@
 /**
- * src/components/visuals/EditorWindow.tsx — векторный макет окна редактора Figma.
- * Это достоверная иллюстрация интерфейса (панели, холст, слои, свойства),
- * нарисованная в SVG, а не скриншот: масштабируется без потерь и весит мало.
+ * src/components/visuals/EditorWindow.tsx — векторный макет интерфейса
+ * редактора «Мини Фигма». Это достоверная иллюстрация (панель инструментов,
+ * холст с фигурами, панели свойств и слоёв), нарисованная в SVG: масштабируется
+ * без потерь и весит мало. Палитра совпадает с настоящим редактором.
  */
 
-type LayerRow = {
-  label: string
-  kind: 'frame' | 'text' | 'rect' | 'component' | 'icon'
-  depth: number
-  active?: boolean
-}
+const BG = '#0e0c16'
+const PANEL = '#14111f'
+const PANEL2 = '#1b1727'
+const PANEL3 = '#241f3d'
+const BORDER = '#2b2540'
+const TEXT = '#ece9f8'
+const MUTED = '#9c97b8'
+const ACCENT = '#7c6cff'
+const CYAN = '#3fd8f0'
 
-const LAYERS: LayerRow[] = [
-  { label: 'Mobile App', kind: 'frame', depth: 0, active: true },
-  { label: 'Hero', kind: 'frame', depth: 1 },
-  { label: 'Image', kind: 'rect', depth: 2 },
-  { label: 'Title', kind: 'text', depth: 2 },
-  { label: 'Button / Primary', kind: 'component', depth: 1 },
-  { label: 'Feature Card', kind: 'frame', depth: 1 },
-  { label: 'Icons', kind: 'icon', depth: 1 },
+const GRID_MINOR = 'rgba(236, 233, 248, 0.10)'
+const AXIS = 'rgba(124, 108, 255, 0.35)'
+
+/** Поля панели свойств: координаты и размер выделенной фигуры. */
+const FIELDS = [
+  { label: 'X', value: '180', cx: 820, cy: 106 },
+  { label: 'Y', value: '140', cx: 930, cy: 106 },
+  { label: 'W', value: '280', cx: 820, cy: 146 },
+  { label: 'H', value: '180', cx: 930, cy: 146 },
 ]
 
-function LayerGlyph({ kind, x, y }: { kind: LayerRow['kind']; x: number; y: number }) {
-  switch (kind) {
-    case 'frame':
-      return (
-        <g stroke="#9a9a9a" strokeWidth="1.3" fill="none">
-          <path d={`M${x - 3} ${y - 4.5}h3M${x} ${y - 4.5}v9M${x - 4.5} ${y - 3}v3M${x + 4.5} ${y - 3}v3`} />
-        </g>
-      )
-    case 'text':
-      return (
-        <text x={x} y={y + 3.4} fontSize="9" fontWeight="700" fill="#9a9a9a" textAnchor="middle">
-          T
-        </text>
-      )
-    case 'rect':
-      return <rect x={x - 4} y={y - 4} width="8" height="8" rx="1.6" fill="none" stroke="#9a9a9a" strokeWidth="1.3" />
-    case 'component':
-      return (
-        <path
-          d={`M${x} ${y - 4.6}l4.6 4.6-4.6 4.6L${x - 4.6} ${y}z`}
-          fill="none"
-          stroke="#a259ff"
-          strokeWidth="1.3"
-        />
-      )
-    case 'icon':
-      return <circle cx={x} cy={y} r="4" fill="none" stroke="#9a9a9a" strokeWidth="1.3" />
-  }
-}
+/** Палитра пресетов — те же цвета, что в PropertiesPanel редактора. */
+const PRESETS = ['#7c6cff', '#3fd8f0', '#f66fc8', '#4ade80', '#f5a623', '#ff5d5d', '#ece9f8', '#1b1727']
 
-type Field = { label: string; value: string }
-
-const FIELDS: Field[] = [
-  { label: 'X', value: '240' },
-  { label: 'Y', value: '96' },
-  { label: 'W', value: '230' },
-  { label: 'H', value: '460' },
+/** Маркеры выделения: 4 угла + середины сторон рамки. */
+const HANDLES = [
+  [176, 136],
+  [320, 136],
+  [464, 136],
+  [176, 230],
+  [464, 230],
+  [176, 324],
+  [320, 324],
+  [464, 324],
 ]
 
 export function EditorWindow({ className = '' }: { className?: string }) {
@@ -66,230 +47,163 @@ export function EditorWindow({ className = '' }: { className?: string }) {
       viewBox="0 0 1040 660"
       className={`font-sans h-auto w-full ${className}`}
       role="img"
-      aria-label="Макет интерфейса Figma: панель слоёв, холст с макетом мобильного экрана и панель свойств"
+      aria-label="Макет интерфейса редактора Мини Фигма: панель инструментов, холст с фигурами и панели свойств и слоёв"
     >
       <defs>
         <clipPath id="editor-window">
           <rect x="0" y="0" width="1040" height="660" rx="18" />
         </clipPath>
-        <linearGradient id="hero-image" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#a259ff" />
-          <stop offset="55%" stopColor="#7a7cff" />
-          <stop offset="100%" stopColor="#1abcfe" />
-        </linearGradient>
-        <pattern id="canvas-dots" width="20" height="20" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r="1" fill="#dcdcdc" />
+        <clipPath id="editor-canvas">
+          <rect x="64" y="48" width="736" height="612" />
+        </clipPath>
+        <pattern id="editor-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="1" fill="#241f36" />
         </pattern>
       </defs>
 
       <g clipPath="url(#editor-window)">
-        <rect x="0" y="0" width="1040" height="660" fill="#ffffff" />
+        <rect x="0" y="0" width="1040" height="660" fill={BG} />
 
-        {/* Панель инструментов сверху */}
-        <rect x="0" y="0" width="1040" height="46" fill="#fbfbfb" />
-        <line x1="0" y1="46" x2="1040" y2="46" stroke="#ebebeb" strokeWidth="1.5" />
-        <circle cx="22" cy="23" r="6" fill="#ff5f57" />
-        <circle cx="42" cy="23" r="6" fill="#febc2e" />
-        <circle cx="62" cy="23" r="6" fill="#28c840" />
-        <text x="520" y="28" textAnchor="middle" fontSize="13" fill="#8a8a8a">
-          Mobile App — Figma
+        {/* ---------------------------- Верхняя панель --------------------------- */}
+        <rect x="0" y="0" width="1040" height="48" fill={PANEL} />
+        <line x1="0" y1="48" x2="1040" y2="48" stroke={BORDER} strokeWidth="1.5" />
+
+        <g transform="translate(22 10) scale(0.5)">
+          <path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0Z" />
+          <path fill="#0acf83" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0Z" />
+          <path fill="#ff7262" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19Z" />
+          <path fill="#f24e1e" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5Z" />
+          <path fill="#a259ff" d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" />
+        </g>
+        <text x="52" y="31" fontSize="15" fontWeight="700" fill={TEXT}>
+          Мини Фигма
         </text>
-        <circle cx="922" cy="23" r="11" fill="#0acf83" />
-        <text x="922" y="27" textAnchor="middle" fontSize="10" fontWeight="700" fill="#ffffff">
-          A
+        <text x="520" y="30" textAnchor="middle" fontSize="12" fill={MUTED}>
+          Выбор — V · Прямоугольник — R · Эллипс — O
         </text>
-        <circle cx="944" cy="23" r="11" fill="#a259ff" />
-        <text x="944" y="27" textAnchor="middle" fontSize="10" fontWeight="700" fill="#ffffff">
-          M
-        </text>
-        <rect x="968" y="11" width="58" height="24" rx="12" fill="#0d0d0d" />
-        <text x="997" y="27" textAnchor="middle" fontSize="10.5" fontWeight="600" fill="#ffffff">
-          Поделиться
+        <text x="1010" y="30" textAnchor="end" fontSize="12" fill={MUTED}>
+          На главную
         </text>
 
-        {/* Левая панель: слои */}
-        <rect x="0" y="46" width="196" height="614" fill="#fcfcfc" />
-        <line x1="196" y1="46" x2="196" y2="660" stroke="#ebebeb" strokeWidth="1.5" />
-        <text x="20" y="82" fontSize="12.5" fontWeight="600" fill="#0d0d0d">
-          Слои
+        {/* ------------------------- Панель инструментов ------------------------- */}
+        <rect x="0" y="48" width="64" height="612" fill={PANEL} />
+        <line x1="64" y1="48" x2="64" y2="660" stroke={BORDER} strokeWidth="1.5" />
+        <text x="32" y="78" textAnchor="middle" fontSize="12" fontWeight="700" fill={MUTED}>
+          MF
         </text>
-        <text x="82" y="82" fontSize="12.5" fill="#b0b0b0">
-          Ресурсы
-        </text>
-        <line x1="20" y1="94" x2="52" y2="94" stroke="#0d0d0d" strokeWidth="2" />
 
-        {LAYERS.map((layer, index) => {
-          const y = 122 + index * 34
-          const x = 34 + layer.depth * 16
-          return (
-            <g key={layer.label + index}>
-              {layer.active ? (
-                <rect x="10" y={y - 15} width="176" height="28" rx="6" fill="#ecebff" />
-              ) : null}
-              <LayerGlyph kind={layer.kind} x={x} y={y} />
-              <text
-                x={x + 12}
-                y={y + 4}
-                fontSize="12"
-                fill={layer.active ? '#1b1b1b' : '#5c5c5c'}
-                fontWeight={layer.active ? 600 : 400}
-              >
-                {layer.label}
-              </text>
-            </g>
-          )
-        })}
-
-        {/* Холст */}
-        <rect x="196" y="46" width="622" height="614" fill="#f1f1f1" />
-        <rect x="196" y="46" width="622" height="614" fill="url(#canvas-dots)" />
-
-        {/* Рамка: мобильный экран */}
-        <rect x="268" y="96" width="234" height="464" rx="22" fill="#ffffff" stroke="#e4e4e4" strokeWidth="1.5" />
-        <rect x="292" y="120" width="186" height="150" rx="14" fill="url(#hero-image)" />
-        <rect x="292" y="292" width="120" height="12" rx="6" fill="#1b1b1b" />
-        <rect x="292" y="314" width="186" height="8" rx="4" fill="#dcdcdc" />
-        <rect x="292" y="330" width="150" height="8" rx="4" fill="#dcdcdc" />
-        <rect x="292" y="360" width="110" height="34" rx="17" fill="#0d0d0d" />
-        <text x="347" y="382" textAnchor="middle" fontSize="12" fontWeight="600" fill="#ffffff">
-          Начать
-        </text>
-        <rect x="292" y="416" width="186" height="60" rx="12" fill="#f7f7f7" />
-        <rect x="292" y="492" width="186" height="44" rx="12" fill="#f7f7f7" />
-
-        {/* Рамка: карточка-компонент */}
-        <rect x="560" y="150" width="216" height="150" rx="16" fill="#ffffff" stroke="#e4e4e4" strokeWidth="1.5" />
-        <path d="M588 176l6 6-6 6-6-6z" fill="none" stroke="#a259ff" strokeWidth="1.6" />
-        <text x="604" y="178" fontSize="11" fontWeight="600" fill="#a259ff">
-          Component
-        </text>
-        <rect x="582" y="200" width="140" height="11" rx="5.5" fill="#1b1b1b" />
-        <rect x="582" y="222" width="172" height="8" rx="4" fill="#dcdcdc" />
-        <rect x="582" y="238" width="120" height="8" rx="4" fill="#dcdcdc" />
-        <rect x="582" y="262" width="72" height="24" rx="12" fill="#a259ff" />
-
-        {/* Рамка: прототип */}
-        <rect x="560" y="340" width="216" height="130" rx="16" fill="#ffffff" stroke="#e4e4e4" strokeWidth="1.5" />
-        <rect x="584" y="366" width="72" height="50" rx="8" fill="#f7f7f7" stroke="#dcdcdc" strokeWidth="1.2" />
-        <rect x="668" y="366" width="84" height="50" rx="8" fill="#f7f7f7" stroke="#dcdcdc" strokeWidth="1.2" />
-        <path d="M656 391h12" stroke="#0acf83" strokeWidth="2" />
-        <path d="M658 387l-4 4 4 4" stroke="#0acf83" strokeWidth="2" fill="none" />
-
-        {/* Соединение прототипа от экрана к карточке */}
+        <rect x="12" y="96" width="40" height="40" rx="10" fill="rgba(124,108,255,0.18)" />
         <path
-          d="M502 300 C 530 300 532 225 558 225"
+          d="M25 106l13 9-6 1.2-2.6 6z"
           fill="none"
-          stroke="#0acf83"
-          strokeWidth="2"
-          strokeDasharray="1 0"
+          stroke={ACCENT}
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+          strokeLinecap="round"
         />
-        <circle cx="502" cy="300" r="5" fill="#0acf83" />
-        <path d="M552 219l7 6-7 6" fill="none" stroke="#0acf83" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <rect x="25" y="157" width="14" height="14" rx="2" fill="none" stroke={MUTED} strokeWidth="1.6" />
+        <circle cx="32" cy="205" r="7.5" fill="none" stroke={MUTED} strokeWidth="1.6" />
 
-        {/* Выделение активной рамки */}
-        <rect x="264" y="92" width="242" height="472" fill="none" stroke="#1abcfe" strokeWidth="2" />
-        {[
-          [264, 92],
-          [506, 92],
-          [264, 564],
-          [506, 564],
-        ].map(([hx, hy]) => (
-          <rect key={`${hx}-${hy}`} x={hx - 4} y={hy - 4} width="8" height="8" fill="#ffffff" stroke="#1abcfe" strokeWidth="2" />
-        ))}
-        <rect x="264" y="70" width="96" height="18" rx="4" fill="#1abcfe" />
-        <text x="272" y="83" fontSize="11" fontWeight="600" fill="#ffffff">
-          Mobile / Home
-        </text>
+        {/* -------------------------------- Холст -------------------------------- */}
+        <rect x="64" y="48" width="736" height="612" fill={BG} />
+        <g clipPath="url(#editor-canvas)">
+          <rect x="64" y="48" width="736" height="612" fill="url(#editor-grid)" />
+          {[64, 224, 384, 544, 704].map((x) => (
+            <line key={`gv-${x}`} x1={x} y1="48" x2={x} y2="660" stroke={GRID_MINOR} strokeWidth="1" />
+          ))}
+          {[48, 208, 368, 528].map((y) => (
+            <line key={`gh-${y}`} x1="64" y1={y} x2="800" y2={y} stroke={GRID_MINOR} strokeWidth="1" />
+          ))}
+          <line x1="384" y1="48" x2="384" y2="660" stroke={AXIS} strokeWidth="1.5" />
+          <line x1="64" y1="368" x2="800" y2="368" stroke={AXIS} strokeWidth="1.5" />
 
-        {/* Правая панель: свойства */}
-        <rect x="818" y="46" width="222" height="614" fill="#fcfcfc" />
-        <line x1="818" y1="46" x2="818" y2="660" stroke="#ebebeb" strokeWidth="1.5" />
-        <text x="838" y="82" fontSize="12.5" fontWeight="600" fill="#0d0d0d">
-          Дизайн
-        </text>
-        <text x="896" y="82" fontSize="12.5" fill="#b0b0b0">
-          Прототип
-        </text>
-        <line x1="838" y1="94" x2="878" y2="94" stroke="#0d0d0d" strokeWidth="2" />
+          {/* Эллипс (не выделен) */}
+          <ellipse cx="620" cy="440" rx="110" ry="80" fill={CYAN} />
 
-        {/* Выравнивание */}
-        {[0, 1, 2, 3, 4, 5].map((i) => (
-          <rect
-            key={`align-${i}`}
-            x={838 + i * 26}
-            y={108}
-            width="16"
-            height="16"
-            rx="3"
-            fill="none"
-            stroke="#c4c4c4"
-            strokeWidth="1.3"
-          />
-        ))}
-
-        <text x="838" y="150" fontSize="11" fontWeight="600" fill="#8a8a8a">
-          Размер
-        </text>
-        {FIELDS.map((field, i) => {
-          const col = i % 2
-          const row = Math.floor(i / 2)
-          const fx = 838 + col * 92
-          const fy = 162 + row * 36
-          return (
-            <g key={field.label}>
-              <rect x={fx} y={fy} width="84" height="28" rx="7" fill="#f2f2f2" />
-              <text x={fx + 12} y={fy + 18} fontSize="11" fill="#a0a0a0">
-                {field.label}
-              </text>
-              <text x={fx + 30} y={fy + 18} fontSize="11.5" fill="#2b2b2b">
-                {field.value}
-              </text>
-            </g>
-          )
-        })}
-
-        <text x="838" y="268" fontSize="11" fontWeight="600" fill="#8a8a8a">
-          Заливка
-        </text>
-        <g>
-          <rect x="838" y="280" width="192" height="30" rx="7" fill="#f2f2f2" />
-          <rect x="846" y="284" width="22" height="22" rx="5" fill="#1abcfe" stroke="#ffffff" strokeWidth="1.5" />
-          <text x="878" y="299" fontSize="11.5" fill="#2b2b2b">
-            1ABC FE
+          {/* Выделенный прямоугольник */}
+          <rect x="180" y="140" width="280" height="180" rx="4" fill={ACCENT} />
+          <rect x="176" y="136" width="288" height="188" fill="none" stroke={ACCENT} strokeWidth="2" />
+          {HANDLES.map(([hx, hy]) => (
+            <rect
+              key={`${hx}-${hy}`}
+              x={hx - 4}
+              y={hy - 4}
+              width="8"
+              height="8"
+              fill="#ffffff"
+              stroke={ACCENT}
+              strokeWidth="2"
+            />
+          ))}
+          <rect x="176" y="108" width="128" height="22" rx="6" fill={ACCENT} />
+          <text x="186" y="123" fontSize="12" fontWeight="600" fill="#ffffff">
+            Прямоугольник
           </text>
-          <text x="1012" y="299" fontSize="11" fill="#a0a0a0" textAnchor="end">
+
+          {/* Масштаб */}
+          <rect x="84" y="606" width="70" height="30" rx="8" fill={PANEL2} stroke={BORDER} />
+          <text x="119" y="626" textAnchor="middle" fontSize="12" fontWeight="600" fill={TEXT}>
             100%
           </text>
         </g>
-        <text x="838" y="338" fontSize="11" fontWeight="600" fill="#8a8a8a">
-          Обводка
-        </text>
-        <g>
-          <rect x="838" y="350" width="192" height="30" rx="7" fill="#f2f2f2" />
-          <rect x="846" y="354" width="22" height="22" rx="5" fill="#ffffff" stroke="#dcdcdc" strokeWidth="1.2" />
-          <text x="878" y="369" fontSize="11.5" fill="#2b2b2b">
-            E6E6E6
-          </text>
-          <text x="1012" y="369" fontSize="11" fill="#a0a0a0" textAnchor="end">
-            1 px
-          </text>
-        </g>
-        <text x="838" y="408" fontSize="11" fontWeight="600" fill="#8a8a8a">
-          Эффекты
-        </text>
-        <g>
-          <rect x="838" y="420" width="192" height="30" rx="7" fill="#f2f2f2" />
-          <text x="850" y="439" fontSize="11.5" fill="#2b2b2b">
-            Тень · 0 4 12
-          </text>
-        </g>
 
-        <text x="838" y="488" fontSize="11" fontWeight="600" fill="#8a8a8a">
-          Экспорт
+        {/* --------------------------- Панель свойств ---------------------------- */}
+        <rect x="800" y="48" width="240" height="612" fill={PANEL} />
+        <line x1="800" y1="48" x2="800" y2="660" stroke={BORDER} strokeWidth="1.5" />
+        <text x="820" y="80" fontSize="12" fontWeight="700" fill={TEXT}>
+          Свойства
         </text>
-        <rect x="838" y="500" width="192" height="34" rx="8" fill="#0d0d0d" />
-        <text x="934" y="521" textAnchor="middle" fontSize="12" fontWeight="600" fill="#ffffff">
-          Экспортировать
+        <line x1="820" y1="94" x2="1020" y2="94" stroke={BORDER} strokeWidth="1" />
+
+        {FIELDS.map((field) => (
+          <g key={field.label}>
+            <rect x={field.cx} y={field.cy} width="92" height="30" rx="7" fill={PANEL2} />
+            <text x={field.cx + 11} y={field.cy + 20} fontSize="11" fill={MUTED}>
+              {field.label}
+            </text>
+            <text x={field.cx + 30} y={field.cy + 20} fontSize="11.5" fill={TEXT}>
+              {field.value}
+            </text>
+          </g>
+        ))}
+
+        <text x="820" y="204" fontSize="10.5" fontWeight="600" fill={MUTED}>
+          Заливка
+        </text>
+        <rect x="820" y="212" width="200" height="32" rx="7" fill={PANEL2} />
+        <rect x="828" y="218" width="20" height="20" rx="5" fill={ACCENT} />
+        <text x="858" y="232" fontSize="11.5" fill={TEXT}>
+          7C6CFF
+        </text>
+        <text x="1012" y="232" textAnchor="end" fontSize="10.5" fill={MUTED}>
+          100%
+        </text>
+
+        {PRESETS.map((color, i) => (
+          <circle key={color} cx={832 + i * 24} cy={272} r="9" fill={color} stroke={BORDER} strokeWidth="1" />
+        ))}
+
+        {/* ---------------------------- Панель слоёв ----------------------------- */}
+        <text x="820" y="330" fontSize="12" fontWeight="700" fill={TEXT}>
+          Слои
+        </text>
+        <line x1="820" y1="344" x2="1020" y2="344" stroke={BORDER} strokeWidth="1" />
+
+        <rect x="812" y="354" width="216" height="34" rx="7" fill={PANEL3} />
+        <rect x="824" y="364" width="13" height="13" rx="2" fill="none" stroke={TEXT} strokeWidth="1.3" />
+        <text x="846" y="376" fontSize="11.5" fill={TEXT}>
+          Прямоугольник 2
+        </text>
+        <text x="1018" y="376" textAnchor="end" fontSize="10.5" fill={MUTED}>
+          2
+        </text>
+
+        <circle cx="830.5" cy="409" r="6.5" fill="none" stroke={MUTED} strokeWidth="1.3" />
+        <text x="846" y="413" fontSize="11.5" fill={MUTED}>
+          Эллипс 1
+        </text>
+        <text x="1018" y="413" textAnchor="end" fontSize="10.5" fill={MUTED}>
+          1
         </text>
       </g>
 
@@ -300,7 +214,7 @@ export function EditorWindow({ className = '' }: { className?: string }) {
         height="658"
         rx="17"
         fill="none"
-        stroke="#e6e6e6"
+        stroke={BORDER}
         strokeWidth="2"
       />
     </svg>

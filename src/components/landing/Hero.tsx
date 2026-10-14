@@ -1,8 +1,8 @@
 /**
  * src/components/landing/Hero.tsx — первый экран: заголовок, пояснение,
- * кнопка скачивания и крупный визуал приложения.
+ * кнопка «Открыть редактор» и крупный визуал редактора.
  */
-import { FIGMA_URLS } from '../../constants/landing'
+import { EDITOR_URL } from '../../constants/landing'
 import { Button } from '../ui/Button'
 import { Container } from '../ui/Container'
 import { Icon } from '../ui/Icon'
@@ -10,10 +10,10 @@ import { Reveal } from '../ui/Reveal'
 import { EditorWindow } from '../visuals/EditorWindow'
 
 const META = [
-  'macOS и Windows',
-  'Бесплатное скачивание',
-  'Локальные шрифты',
-  'Общие файлы с веб-версией',
+  'Без установки',
+  'Без регистрации',
+  'Холст с сеткой',
+  'Горячие клавиши V / R / O',
 ]
 
 export function Hero() {
@@ -32,42 +32,41 @@ export function Hero() {
           <Reveal className="flex flex-col items-start">
             <span className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-paper/70 px-3.5 py-1.5 text-[13px] font-medium text-muted">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
-              Настольное приложение Figma для macOS и Windows
+              Учебный мини-редактор, который живёт в браузере
             </span>
 
             <h1 className="mt-6 text-[40px] font-extrabold leading-[1.05] tracking-[-0.03em] text-ink sm:text-[56px] lg:text-[64px]">
-              Figma — отдельным
+              Рисуй и двигай фигуры
               <br />
               <span className="bg-[linear-gradient(100deg,#a259ff,#1abcfe)] bg-clip-text text-transparent">
-                приложением на компьютере
+                прямо в браузере
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted">
-              Настольная версия для macOS и Windows: отдельное окно вместо вкладки браузера и
-              поддержка шрифтов, установленных на компьютере. Файлы и аккаунт — те же, что и в
-              веб-версии.
+              Мини Фигма — учебный редактор: холст с сеткой, панорама и зум, прямоугольники и
+              эллипсы, слои, свойства и отмена действий. Открывается одним кликом — без установки
+              и регистрации.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Button
-                href={FIGMA_URLS.downloads}
-                external
+                href={EDITOR_URL}
                 size="lg"
                 icon={
                   <Icon
-                    name="download"
-                    className="h-5 w-5 transition-transform duration-200 group-hover:translate-y-0.5"
+                    name="arrowRight"
+                    className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5"
                   />
                 }
               >
-                Скачать приложение Figma
+                Открыть редактор
               </Button>
               <a
-                href="#features"
+                href="#steps"
                 className="group inline-flex h-13 items-center justify-center gap-2 rounded-full px-6 text-base font-semibold text-ink transition-colors duration-200 hover:bg-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet focus-visible:ring-offset-2"
               >
-                Посмотреть возможности
+                Как это работает
                 <Icon
                   name="arrowRight"
                   className="h-5 w-5 text-muted transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-ink"
@@ -76,15 +75,7 @@ export function Hero() {
             </div>
 
             <p className="mt-5 text-sm text-faint">
-              Откроется официальная страница загрузок{' '}
-              <a
-                href={FIGMA_URLS.downloads}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="font-medium text-muted underline decoration-line-2 underline-offset-4 transition-colors hover:text-ink"
-              >
-                figma.com
-              </a>
+              Редактор откроется в этом же окне — устанавливать ничего не нужно.
             </p>
 
             <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-6">

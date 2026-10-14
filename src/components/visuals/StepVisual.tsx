@@ -1,13 +1,13 @@
 /**
  * src/components/visuals/StepVisual.tsx — маленькие иллюстрации к трём шагам:
- * страница загрузки, установка и первый проект.
+ * открыть редактор, нарисовать фигуру и настроить её свойства.
  */
 
 type StepVisualProps = {
   index: number
 }
 
-function DownloadPage() {
+function OpenEditor() {
   return (
     <>
       <rect width="260" height="180" rx="12" fill="#ffffff" stroke="#ececec" />
@@ -16,79 +16,115 @@ function DownloadPage() {
       <circle cx="16" cy="13" r="3.6" fill="#ff5f57" />
       <circle cx="27" cy="13" r="3.6" fill="#febc2e" />
       <circle cx="38" cy="13" r="3.6" fill="#28c840" />
-      <text x="20" y="58" fontSize="12" fontWeight="700" fill="#1b1b1b">
-        Загрузка Figma
+      <rect x="70" y="7" width="120" height="12" rx="6" fill="#efefef" />
+
+      {/* Знак проекта */}
+      <g transform="translate(116 44) scale(0.32)">
+        <path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0Z" />
+        <path fill="#0acf83" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0Z" />
+        <path fill="#ff7262" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19Z" />
+        <path fill="#f24e1e" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5Z" />
+        <path fill="#a259ff" d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" />
+      </g>
+
+      {/* Кнопка запуска */}
+      <rect x="48" y="90" width="164" height="42" rx="12" fill="#0d0d0d" />
+      <text x="130" y="116" textAnchor="middle" fontSize="12.5" fontWeight="600" fill="#ffffff">
+        Открыть редактор
       </text>
-      <rect x="20" y="70" width="130" height="8" rx="4" fill="#e6e6e6" />
-      {/* macOS */}
-      <rect x="20" y="94" width="106" height="34" rx="9" fill="#0d0d0d" />
-      <path d="M36 104v10M32 110l4 4 4-4" stroke="#ffffff" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <text x="50" y="116" fontSize="10.5" fontWeight="600" fill="#ffffff">
-        macOS
-      </text>
-      {/* Windows */}
-      <rect x="134" y="94" width="106" height="34" rx="9" fill="#f2f2f2" />
-      <path d="M150 104v10M146 110l4 4 4-4" stroke="#1b1b1b" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-      <text x="164" y="116" fontSize="10.5" fontWeight="600" fill="#1b1b1b">
-        Windows
-      </text>
-      <rect x="20" y="142" width="180" height="7" rx="3.5" fill="#ededed" />
+      <path d="M182 124l5 26 7-9 10 3z" fill="#0d0d0d" stroke="#ffffff" strokeWidth="1.8" />
+      <rect x="48" y="146" width="120" height="7" rx="3.5" fill="#ededed" />
     </>
   )
 }
 
-function Install() {
+function DrawShape() {
   return (
     <>
       <rect width="260" height="180" rx="12" fill="#ffffff" stroke="#ececec" />
-      <rect width="260" height="26" rx="12" fill="#fbfbfb" />
-      <rect y="14" width="260" height="12" fill="#fbfbfb" />
-      <circle cx="16" cy="13" r="3.6" fill="#ff5f57" />
-      <circle cx="27" cy="13" r="3.6" fill="#febc2e" />
-      <circle cx="38" cy="13" r="3.6" fill="#28c840" />
-      <circle cx="130" cy="86" r="30" fill="#f5f0ff" />
-      <path
-        d="M130 70v26M118 84l12 12 12-12"
-        fill="none"
-        stroke="#a259ff"
-        strokeWidth="3"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <rect x="44" y="134" width="172" height="12" rx="6" fill="#ededed" />
-      <rect x="44" y="134" width="118" height="12" rx="6" fill="#0acf83" />
-      <text x="44" y="164" fontSize="10.5" fill="#8a8a8a">
-        Установка… 68%
-      </text>
-    </>
-  )
-}
-
-function Create() {
-  return (
-    <>
-      <rect width="260" height="180" rx="12" fill="#ffffff" stroke="#ececec" />
+      {/* Холст */}
       <rect x="14" y="14" width="232" height="152" rx="8" fill="#f4f4f4" />
-      {/* новый артборд */}
-      <rect x="34" y="34" width="120" height="112" rx="8" fill="#ffffff" stroke="#e6e6e6" />
-      <rect x="48" y="48" width="92" height="40" rx="6" fill="#a259ff" />
-      <rect x="48" y="98" width="60" height="8" rx="4" fill="#1b1b1b" />
-      <rect x="48" y="114" width="92" height="7" rx="3.5" fill="#dedede" />
-      {/* рисование */}
-      <rect x="172" y="58" width="58" height="58" rx="8" fill="none" stroke="#1abcfe" strokeWidth="1.6" strokeDasharray="4 3" />
-      <circle cx="172" cy="58" r="3" fill="#ffffff" stroke="#1abcfe" strokeWidth="1.6" />
-      <circle cx="230" cy="116" r="3" fill="#ffffff" stroke="#1abcfe" strokeWidth="1.6" />
-      <path d="M158 150l5 26 7-9 10 3z" fill="#0d0d0d" stroke="#ffffff" strokeWidth="1.8" />
-      <circle cx="196" cy="46" r="11" fill="#0acf83" />
-      <path d="M191 46h10M196 41v10" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" />
+      {[46, 82, 118, 154, 190].map((x) =>
+        [40, 76, 112, 148].map((y) => <circle key={`${x}-${y}`} cx={x} cy={y} r="1" fill="#dcdcdc" />),
+      )}
+
+      {/* Готовая фигура */}
+      <rect x="28" y="92" width="84" height="56" rx="5" fill="#7c6cff" />
+
+      {/* Фигура, которую рисуют прямо сейчас */}
+      <rect
+        x="128"
+        y="40"
+        width="98"
+        height="96"
+        rx="6"
+        fill="#7c6cff"
+        fillOpacity="0.16"
+        stroke="#7c6cff"
+        strokeWidth="2"
+        strokeDasharray="6 4"
+      />
+      <circle cx="226" cy="136" r="4" fill="#ffffff" stroke="#7c6cff" strokeWidth="2" />
+      <path d="M226 136l5 26 7-9 10 3z" fill="#0d0d0d" stroke="#ffffff" strokeWidth="1.8" />
     </>
   )
 }
 
-const STEPS = [DownloadPage, Install, Create]
+function Adjust() {
+  return (
+    <>
+      <rect width="260" height="180" rx="12" fill="#ffffff" stroke="#ececec" />
+      <text x="18" y="32" fontSize="12" fontWeight="700" fill="#1b1b1b">
+        Свойства
+      </text>
+
+      {[
+        { label: 'X', value: '56', cx: 18, cy: 42 },
+        { label: 'Y', value: '72', cx: 134, cy: 42 },
+        { label: 'W', value: '170', cx: 18, cy: 72 },
+        { label: 'H', value: '120', cx: 134, cy: 72 },
+      ].map((field) => (
+        <g key={field.label}>
+          <rect x={field.cx} y={field.cy} width="108" height="24" rx="6" fill="#f2f2f2" />
+          <text x={field.cx + 10} y={field.cy + 16} fontSize="10.5" fill="#a0a0a0">
+            {field.label}
+          </text>
+          <text x={field.cx + 26} y={field.cy + 16} fontSize="11" fill="#2b2b2b">
+            {field.value}
+          </text>
+        </g>
+      ))}
+
+      <text x="18" y="116" fontSize="10.5" fontWeight="600" fill="#8a8a8a">
+        Заливка
+      </text>
+      <rect x="18" y="122" width="224" height="30" rx="7" fill="#f2f2f2" />
+      <rect x="26" y="127" width="20" height="20" rx="5" fill="#7c6cff" />
+      <text x="56" y="143" fontSize="11" fill="#2b2b2b">
+        7C6CFF
+      </text>
+
+      {['#7c6cff', '#3fd8f0', '#f66fc8', '#4ade80', '#f5a623', '#ff5d5d', '#ece9f8', '#1b1727'].map(
+        (color, i) => (
+          <circle
+            key={color}
+            cx={30 + i * 26}
+            cy={166}
+            r="8"
+            fill={color}
+            stroke="#e0e0e0"
+            strokeWidth="1"
+          />
+        ),
+      )}
+    </>
+  )
+}
+
+const STEPS = [OpenEditor, DrawShape, Adjust]
 
 export function StepVisual({ index }: StepVisualProps) {
-  const Visual = STEPS[index] ?? DownloadPage
+  const Visual = STEPS[index] ?? OpenEditor
 
   return (
     <svg viewBox="0 0 260 180" className="font-sans h-auto w-full" aria-hidden="true">

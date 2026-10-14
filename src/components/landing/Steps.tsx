@@ -15,9 +15,9 @@ export function Steps() {
       <Container>
         <Reveal className="flex justify-center">
           <SectionHeading
-            eyebrow="Как начать"
-            title="От загрузки до первого макета — за пару минут"
-            description="Никаких сложных настроек: скачал, установил, вошёл в аккаунт — и можно начинать."
+            eyebrow="Как пользоваться"
+            title="Первый рисунок — меньше чем за минуту"
+            description="Никаких настроек и установки: открыл редактор, выбрал инструмент, нарисовал фигуру."
           />
         </Reveal>
 

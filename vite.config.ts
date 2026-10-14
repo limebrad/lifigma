@@ -7,4 +7,16 @@ export default defineConfig({
   // базовый путь для GitHub Pages: сайт живёт в подпапке /lifigma/
   base: '/lifigma/',
   plugins: [react(), tailwindcss()],
+  build: {
+    rollupOptions: {
+      // Две страницы одного сайта:
+      //   index.html  — лендинг про проект mini-figma;
+      //   editor.html — сам рабочий редактор.
+      // Пути относительные: Vite считает их от корня проекта.
+      input: {
+        main: 'index.html',
+        editor: 'editor.html',
+      },
+    },
+  },
 })

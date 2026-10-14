@@ -14,9 +14,9 @@ export function Showcase() {
       <Container>
         <Reveal className="flex justify-center">
           <SectionHeading
-            eyebrow="Возможности"
-            title="Всё для продукта — в одной Figma"
-            description="Макеты, дизайн-система и прототипы живут в одном файле и работают одинаково в приложении и в браузере."
+            eyebrow="Что внутри"
+            title="Холст, фигуры и панели"
+            description="Три части редактора, с которыми ты будешь работать: полотно с камерой, инструменты фигур и панели слоёв и свойств."
           />
         </Reveal>
 

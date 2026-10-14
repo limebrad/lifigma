@@ -1,131 +1,198 @@
 /**
  * src/components/visuals/ShowcaseVisual.tsx — три векторные иллюстрации для
- * галереи возможностей: макеты, компоненты и прототипы. Воспроизводят
- * типичные рабочие сцены Figma и служат фоном карточек-примеров.
+ * галереи возможностей. Каждая повторяет реальную часть редактора:
+ * фигуры, свободный холст с камерой и панели слоёв и свойств. Рисуются
+ * в тёмной палитре проекта, поэтому совпадают с самим редактором.
  */
-import type { ComponentType } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import type { ShowcaseVariant } from '../../types/landing'
 
 const LABELS: Record<ShowcaseVariant, string> = {
-  layouts: 'Холст Figma с двумя макетами экранов и направляющими выравнивания',
-  components: 'Компоненты кнопок с вариантами и палитра цветовых стилей',
-  prototypes: 'Два экрана, соединённые интерактивным переходом прототипа',
+  shapes: 'Холст редактора: выделенный прямоугольник и эллипс',
+  navigation: 'Свободный холст с сеткой, осями и подсказками по камере',
+  panels: 'Панель свойств с координатами и цветом и панель слоёв',
 }
 
-function Layouts() {
+/** Тёмный «экран» редактора: фон, сетка точек и скруглённые углы. */
+function Screen({ uid, children }: { uid: string; children: ReactNode }) {
+  const clip = `sv-clip-${uid}`
+  const grid = `sv-grid-${uid}`
   return (
     <>
-      <rect width="420" height="300" rx="16" fill="#f4f4f4" />
-      {/* Макет десктопного экрана */}
-      <rect x="28" y="36" width="212" height="228" rx="10" fill="#ffffff" stroke="#e6e6e6" />
-      <rect x="44" y="52" width="180" height="26" rx="6" fill="#f1f1f1" />
-      <rect x="54" y="61" width="42" height="8" rx="4" fill="#d6d6d6" />
-      <circle cx="212" cy="65" r="6" fill="#a259ff" />
-      <rect x="44" y="92" width="102" height="72" rx="8" fill="#ecebff" />
-      <rect x="156" y="92" width="68" height="72" rx="8" fill="#f1f1f1" />
-      <rect x="44" y="178" width="180" height="8" rx="4" fill="#dedede" />
-      <rect x="44" y="194" width="136" height="8" rx="4" fill="#dedede" />
-      <rect x="44" y="218" width="86" height="28" rx="14" fill="#0d0d0d" />
-      {/* Макет мобильного экрана */}
-      <rect x="264" y="64" width="128" height="200" rx="16" fill="#ffffff" stroke="#e6e6e6" />
-      <rect x="276" y="78" width="104" height="74" rx="9" fill="#1abcfe" />
-      <rect x="276" y="164" width="68" height="9" rx="4.5" fill="#1b1b1b" />
-      <rect x="276" y="182" width="104" height="7" rx="3.5" fill="#dedede" />
-      <rect x="276" y="196" width="80" height="7" rx="3.5" fill="#dedede" />
-      <rect x="276" y="220" width="70" height="24" rx="12" fill="#0d0d0d" />
-      {/* Направляющие выравнивания */}
-      <line x1="256" y1="36" x2="256" y2="264" stroke="#1abcfe" strokeWidth="1.2" strokeDasharray="4 4" />
-      <line x1="28" y1="164" x2="392" y2="164" stroke="#1abcfe" strokeWidth="1.2" strokeDasharray="4 4" />
-      <rect x="246" y="150" width="44" height="16" rx="4" fill="#1abcfe" />
-      <text x="268" y="162" textAnchor="middle" fontSize="10" fontWeight="600" fill="#ffffff">
-        1280
-      </text>
+      <defs>
+        <clipPath id={clip}>
+          <rect width="420" height="300" rx="16" />
+        </clipPath>
+        <pattern id={grid} width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="1" fill="#241f36" />
+        </pattern>
+      </defs>
+      <g clipPath={`url(#${clip})`}>
+        <rect width="420" height="300" fill="#0e0c16" />
+        <rect width="420" height="300" fill={`url(#${grid})`} />
+        {children}
+      </g>
     </>
   )
 }
 
-function Components() {
-  const colors = [
-    { fill: '#a259ff', label: 'A259FF' },
-    { fill: '#1abcfe', label: '1ABCFE' },
-    { fill: '#0acf83', label: '0ACF83' },
-    { fill: '#f24e1e', label: 'F24E1E' },
-  ]
+/** Маркеры выделения по углам и серединам сторон прямоугольника. */
+function handles(x: number, y: number, w: number, h: number) {
+  const right = x + w
+  const bottom = y + h
+  const midX = x + w / 2
+  const midY = y + h / 2
+  return [
+    [x, y],
+    [midX, y],
+    [right, y],
+    [x, midY],
+    [right, midY],
+    [x, bottom],
+    [midX, bottom],
+    [right, bottom],
+  ].map(([hx, hy]) => (
+    <rect key={`${hx}-${hy}`} x={hx - 4} y={hy - 4} width="8" height="8" fill="#ffffff" stroke="#7c6cff" strokeWidth="2" />
+  ))
+}
 
+function Shapes() {
   return (
-    <>
-      <rect width="420" height="300" rx="16" fill="#ffffff" />
-      {/* Карточка компонента */}
-      <rect x="28" y="34" width="364" height="122" rx="12" fill="#f7f7f7" stroke="#ececec" />
-      <path d="M46 54l7 7-7 7-7-7z" fill="none" stroke="#a259ff" strokeWidth="1.8" />
-      <text x="64" y="64" fontSize="12" fontWeight="600" fill="#a259ff">
-        Button / Primary
+    <Screen uid="shapes">
+      {/* Подпись выделенной фигуры */}
+      <rect x="52" y="40" width="104" height="21" rx="5" fill="#7c6cff" />
+      <text x="62" y="55" fontSize="11" fontWeight="600" fill="#ffffff">
+        Прямоугольник
       </text>
-      {/* Варианты кнопки */}
-      <rect x="48" y="86" width="104" height="40" rx="20" fill="#0d0d0d" />
-      <text x="100" y="111" textAnchor="middle" fontSize="12" fontWeight="600" fill="#ffffff">
-        Default
+
+      <rect x="56" y="72" width="170" height="120" rx="4" fill="#7c6cff" />
+      <rect x="52" y="68" width="178" height="128" fill="none" stroke="#7c6cff" strokeWidth="2" />
+      {handles(52, 68, 178, 128)}
+
+      <ellipse cx="312" cy="196" rx="74" ry="56" fill="#3fd8f0" />
+    </Screen>
+  )
+}
+
+function Navigation() {
+  const majors = [42, 126, 210, 294, 378]
+  return (
+    <Screen uid="navigation">
+      {/* Крупная сетка */}
+      {majors.map((v) => (
+        <line key={`v-${v}`} x1={v} y1="0" x2={v} y2="300" stroke="rgba(236,233,248,0.12)" strokeWidth="1" />
+      ))}
+      {[42, 126, 210, 294].map((h) => (
+        <line key={`h-${h}`} x1="0" y1={h} x2="420" y2={h} stroke="rgba(236,233,248,0.12)" strokeWidth="1" />
+      ))}
+
+      {/* Мировые оси */}
+      <line x1="210" y1="0" x2="210" y2="300" stroke="rgba(124,108,255,0.55)" strokeWidth="1.5" />
+      <line x1="0" y1="150" x2="420" y2="150" stroke="rgba(124,108,255,0.55)" strokeWidth="1.5" />
+
+      {/* Подсказка панорамы */}
+      <g stroke="#9c97b8" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M210 116v68M176 150h68" />
+        <path d="M204 122l6-6 6 6M204 178l6 6 6-6M182 144l-6 6 6 6M238 144l6 6-6 6" />
+      </g>
+
+      {/* Масштаб */}
+      <rect x="332" y="252" width="68" height="28" rx="14" fill="#1b1727" stroke="#2b2540" />
+      <text x="366" y="270" textAnchor="middle" fontSize="12" fontWeight="600" fill="#ece9f8">
+        100%
       </text>
-      <rect x="164" y="86" width="104" height="40" rx="20" fill="#a259ff" />
-      <text x="216" y="111" textAnchor="middle" fontSize="12" fontWeight="600" fill="#ffffff">
-        Hover
+
+      {/* Подсказка по управлению */}
+      <rect x="20" y="252" width="150" height="28" rx="14" fill="#1b1727" stroke="#2b2540" />
+      <text x="95" y="270" textAnchor="middle" fontSize="11.5" fill="#9c97b8">
+        Пробел + мышь
       </text>
-      <rect x="280" y="86" width="94" height="40" rx="20" fill="#ededed" />
-      <text x="327" y="111" textAnchor="middle" fontSize="12" fontWeight="600" fill="#a0a0a0">
-        Disabled
+    </Screen>
+  )
+}
+
+function Panels() {
+  return (
+    <Screen uid="panels">
+      {/* Холст слева */}
+      <rect x="30" y="80" width="150" height="110" rx="4" fill="#7c6cff" />
+      <ellipse cx="118" cy="232" rx="62" ry="44" fill="#3fd8f0" />
+
+      {/* Панель справа */}
+      <rect x="220" y="0" width="200" height="300" fill="#14111f" />
+      <line x1="220" y1="0" x2="220" y2="300" stroke="#2b2540" strokeWidth="1.5" />
+
+      <text x="236" y="34" fontSize="12" fontWeight="700" fill="#ece9f8">
+        Свойства
       </text>
-      {/* Цветовые стили */}
-      <rect x="28" y="172" width="364" height="94" rx="12" fill="#f7f7f7" stroke="#ececec" />
-      <text x="46" y="196" fontSize="11" fontWeight="600" fill="#8a8a8a">
-        Цветовые стили
-      </text>
-      {colors.map((color, i) => (
-        <g key={color.label}>
-          <circle cx={60 + i * 92} cy={226} r="14" fill={color.fill} />
-          <text x={60 + i * 92} y={254} textAnchor="middle" fontSize="9.5" fill="#8a8a8a">
-            {color.label}
+
+      {/* Координаты и размер */}
+      {[
+        { label: 'X', value: '56', cx: 236, cy: 46 },
+        { label: 'Y', value: '72', cx: 326, cy: 46 },
+        { label: 'W', value: '170', cx: 236, cy: 80 },
+        { label: 'H', value: '120', cx: 326, cy: 80 },
+      ].map((field) => (
+        <g key={field.label}>
+          <rect x={field.cx} y={field.cy} width="82" height="26" rx="6" fill="#1b1727" />
+          <text x={field.cx + 10} y={field.cy + 17} fontSize="10.5" fill="#9c97b8">
+            {field.label}
+          </text>
+          <text x={field.cx + 26} y={field.cy + 17} fontSize="11" fill="#ece9f8">
+            {field.value}
           </text>
         </g>
       ))}
-    </>
-  )
-}
 
-function Prototypes() {
-  return (
-    <>
-      <rect width="420" height="300" rx="16" fill="#f4f4f4" />
-      {/* Экран A */}
-      <rect x="34" y="66" width="118" height="184" rx="16" fill="#ffffff" stroke="#e6e6e6" />
-      <rect x="46" y="80" width="94" height="66" rx="9" fill="#a259ff" />
-      <rect x="46" y="158" width="60" height="9" rx="4.5" fill="#1b1b1b" />
-      <rect x="46" y="176" width="94" height="7" rx="3.5" fill="#dedede" />
-      <rect x="46" y="200" width="70" height="26" rx="13" fill="#0d0d0d" />
-      {/* Экран B */}
-      <rect x="268" y="66" width="118" height="184" rx="16" fill="#ffffff" stroke="#e6e6e6" />
-      <rect x="280" y="80" width="94" height="46" rx="9" fill="#1abcfe" />
-      <rect x="280" y="138" width="94" height="46" rx="9" fill="#0acf83" />
-      <rect x="280" y="198" width="72" height="9" rx="4.5" fill="#1b1b1b" />
-      {/* Связь прототипа */}
-      <path d="M152 214 C 210 214 210 150 268 150" fill="none" stroke="#0acf83" strokeWidth="2.4" />
-      <circle cx="152" cy="214" r="6" fill="#0acf83" />
-      <circle cx="268" cy="150" r="6" fill="#0acf83" />
-      <path d="M258 143l9 7-9 7" fill="none" stroke="#0acf83" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
-      {/* Курсор */}
-      <path d="M212 108l4 22 6-8 9 3z" fill="#0d0d0d" stroke="#ffffff" strokeWidth="1.6" />
-      {/* Плашка Interactive */}
-      <rect x="150" y="121" width="86" height="20" rx="10" fill="#0d0d0d" />
-      <text x="193" y="135" textAnchor="middle" fontSize="10.5" fontWeight="600" fill="#ffffff">
-        ▶ Interactive
+      <text x="236" y="126" fontSize="10.5" fontWeight="600" fill="#9c97b8">
+        Заливка
       </text>
-    </>
+      <rect x="236" y="134" width="170" height="28" rx="6" fill="#1b1727" />
+      <rect x="243" y="140" width="16" height="16" rx="4" fill="#7c6cff" />
+      <text x="268" y="153" fontSize="11" fill="#ece9f8">
+        7C6CFF
+      </text>
+
+      {/* Палитра пресетов */}
+      {['#7c6cff', '#3fd8f0', '#f66fc8', '#4ade80', '#f5a623', '#ff5d5d', '#ece9f8', '#1b1727'].map(
+        (color, i) => (
+          <circle
+            key={color}
+            cx={244 + i * 21}
+            cy={188}
+            r="9"
+            fill={color}
+            stroke="#2b2540"
+            strokeWidth="1"
+          />
+        ),
+      )}
+
+      <text x="236" y="228" fontSize="12" fontWeight="700" fill="#ece9f8">
+        Слои
+      </text>
+      <line x1="236" y1="240" x2="406" y2="240" stroke="#2b2540" strokeWidth="1" />
+
+      {/* Выделенный слой */}
+      <rect x="228" y="248" width="186" height="30" rx="6" fill="#241f3d" />
+      <rect x="238" y="259" width="11" height="11" rx="2" fill="none" stroke="#ece9f8" strokeWidth="1.3" />
+      <text x="258" y="268" fontSize="11" fill="#ece9f8">
+        Прямоугольник 2
+      </text>
+
+      {/* Второй слой */}
+      <circle cx="243.5" cy="294" r="5.5" fill="none" stroke="#9c97b8" strokeWidth="1.3" />
+      <text x="258" y="298" fontSize="11" fill="#9c97b8">
+        Эллипс 1
+      </text>
+    </Screen>
   )
 }
 
 const VARIANTS: Record<ShowcaseVariant, ComponentType> = {
-  layouts: Layouts,
-  components: Components,
-  prototypes: Prototypes,
+  shapes: Shapes,
+  navigation: Navigation,
+  panels: Panels,
 }
 
 export function ShowcaseVisual({ variant }: { variant: ShowcaseVariant }) {

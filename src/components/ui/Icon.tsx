@@ -10,6 +10,10 @@ export type IconName =
   | 'layout'
   | 'users'
   | 'prototype'
+  | 'grid'
+  | 'shapes'
+  | 'layers'
+  | 'undo'
   | 'spark'
   | 'gem'
   | 'team'
@@ -57,6 +61,31 @@ const PATHS: Record<IconName, ReactNode> = {
       <rect x="12" y="13.5" width="9" height="7" rx="1.8" />
       <path d="M7.5 10.5v3a1.8 1.8 0 0 0 1.8 1.8H12" />
       <circle cx="7.5" cy="7" r="0.6" fill="currentColor" stroke="none" />
+    </>
+  ),
+  grid: (
+    <>
+      <rect x="4" y="4" width="16" height="16" rx="2" />
+      <path d="M4 9.33h16M4 14.66h16M9.33 4v16M14.66 4v16" />
+    </>
+  ),
+  shapes: (
+    <>
+      <rect x="3.5" y="3.5" width="9.5" height="9.5" rx="1.8" />
+      <circle cx="16" cy="16" r="4.6" />
+    </>
+  ),
+  layers: (
+    <>
+      <path d="M12 3.5 21 8l-9 4.5L3 8z" />
+      <path d="M4.4 11.9 12 15.7l7.6-3.8" />
+      <path d="M4.4 15.9 12 19.7l7.6-3.8" />
+    </>
+  ),
+  undo: (
+    <>
+      <path d="M4.5 9h10.2a5 5 0 0 1 0 10H8.5" />
+      <path d="M8.5 5 4.5 9l4 4" />
     </>
   ),
   spark: (

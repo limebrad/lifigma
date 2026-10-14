@@ -3,7 +3,7 @@
  * меню разделов, кнопкой скачивания и мобильным раскрывающимся меню.
  */
 import { useEffect, useState } from 'react'
-import { FIGMA_URLS, NAV_LINKS } from '../../constants/landing'
+import { EDITOR_URL, NAV_LINKS } from '../../constants/landing'
 import { Button } from '../ui/Button'
 import { FigmaLogo } from '../ui/FigmaLogo'
 import { Icon } from '../ui/Icon'
@@ -51,12 +51,11 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <Button
-            href={FIGMA_URLS.downloads}
-            external
+            href={EDITOR_URL}
             className="hidden sm:inline-flex"
-            icon={<Icon name="download" className="h-[18px] w-[18px]" />}
+            icon={<Icon name="arrowRight" className="h-[18px] w-[18px]" />}
           >
-            Скачать
+            Открыть редактор
           </Button>
 
           {/* Кнопка мобильного меню */}
@@ -96,13 +95,12 @@ export function SiteHeader() {
             </ul>
           </nav>
           <Button
-            href={FIGMA_URLS.downloads}
-            external
+            href={EDITOR_URL}
             size="lg"
             className="mt-3 w-full"
-            icon={<Icon name="download" className="h-5 w-5" />}
+            icon={<Icon name="arrowRight" className="h-5 w-5" />}
           >
-            Скачать приложение
+            Открыть редактор
           </Button>
         </Container>
       </div>

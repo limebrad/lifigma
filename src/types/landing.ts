@@ -1,6 +1,6 @@
 /**
  * src/types/landing.ts — типы контента лендинга «Мини Фигма».
- * Здесь описан «язык» страницы: пункты меню, преимущества, шаги, FAQ.
+ * Здесь описан «язык» страницы: пункты меню, возможности, шаги, FAQ.
  */
 
 export type NavLink = {
@@ -8,7 +8,7 @@ export type NavLink = {
   label: string
 }
 
-export type FeatureIcon = 'window' | 'type' | 'users' | 'prototype'
+export type FeatureIcon = 'grid' | 'shapes' | 'layers' | 'undo'
 
 export type Feature = {
   id: string
@@ -23,7 +23,7 @@ export type Step = {
   text: string
 }
 
-export type ShowcaseVariant = 'layouts' | 'components' | 'prototypes'
+export type ShowcaseVariant = 'shapes' | 'navigation' | 'panels'
 
 export type ShowcaseItem = {
   id: string

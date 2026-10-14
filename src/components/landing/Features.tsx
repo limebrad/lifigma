@@ -10,10 +10,10 @@ import { Reveal } from '../ui/Reveal'
 import { SectionHeading } from '../ui/SectionHeading'
 
 const ACCENTS: Record<FeatureIcon, { chip: string; glyph: string }> = {
-  window: { chip: 'bg-brand-violet/12', glyph: '#a259ff' },
-  type: { chip: 'bg-brand-blue/12', glyph: '#0e9fd6' },
-  users: { chip: 'bg-brand-green/12', glyph: '#0a9d68' },
-  prototype: { chip: 'bg-brand-orange/12', glyph: '#e5533d' },
+  grid: { chip: 'bg-brand-violet/12', glyph: '#a259ff' },
+  shapes: { chip: 'bg-brand-blue/12', glyph: '#0e9fd6' },
+  layers: { chip: 'bg-brand-green/12', glyph: '#0a9d68' },
+  undo: { chip: 'bg-brand-orange/12', glyph: '#e5533d' },
 }
 
 export function Features() {
@@ -22,9 +22,9 @@ export function Features() {
       <Container>
         <Reveal className="flex justify-center">
           <SectionHeading
-            eyebrow="Зачем приложение"
-            title="Настольная версия — это удобнее"
-            description="Та же Figma, но заточенная под долгую работу на компьютере: отдельное окно вместо вкладки, локальные шрифты и общие файлы с веб-версией."
+            eyebrow="Возможности"
+            title="Что умеет редактор"
+            description="Небольшой, но настоящий редактор: холст с камерой, фигуры, слои, свойства и история действий — всё работает прямо в браузере."
           />
         </Reveal>
 

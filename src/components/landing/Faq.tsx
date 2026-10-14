@@ -4,7 +4,7 @@
  * поэтому доступен с клавиатуры и для скринридеров.
  */
 import { useState } from 'react'
-import { FAQ, FIGMA_URLS } from '../../constants/landing'
+import { EDITOR_URL, FAQ } from '../../constants/landing'
 import { Container } from '../ui/Container'
 import { Icon } from '../ui/Icon'
 import { Reveal } from '../ui/Reveal'
@@ -20,7 +20,7 @@ export function Faq() {
           <SectionHeading
             eyebrow="Вопросы"
             title="Отвечаем на главное"
-            description="Коротко о том, зачем ставить приложение и как это сделать."
+            description="Коротко о том, что это за проект и как им пользоваться."
           />
         </Reveal>
 
@@ -83,13 +83,11 @@ export function Faq() {
           <p className="mt-8 text-center text-[15px] text-muted">
             Не нашли ответ?{' '}
             <a
-              href={FIGMA_URLS.help}
-              target="_blank"
-              rel="noreferrer noopener"
+              href={EDITOR_URL}
               className="inline-flex items-center gap-1.5 font-semibold text-ink underline decoration-line-2 underline-offset-4 transition-colors hover:decoration-ink"
             >
-              Справочный центр Figma
-              <Icon name="external" className="h-4 w-4" />
+              Откройте редактор и попробуйте сами
+              <Icon name="arrowRight" className="h-4 w-4" />
             </a>
           </p>
         </div>
