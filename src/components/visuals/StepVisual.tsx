@@ -19,13 +19,15 @@ function OpenEditor() {
       <rect x="70" y="7" width="120" height="12" rx="6" fill="#efefef" />
 
       {/* Знак проекта */}
-      <g transform="translate(116 44) scale(0.32)">
-        <path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0Z" />
-        <path fill="#0acf83" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0Z" />
-        <path fill="#ff7262" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19Z" />
-        <path fill="#f24e1e" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5Z" />
-        <path fill="#a259ff" d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" />
-      </g>
+      <defs>
+        <linearGradient id="step-logo-grad" x1="116" y1="40" x2="144" y2="68" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#a259ff" />
+          <stop offset="1" stopColor="#1abcfe" />
+        </linearGradient>
+      </defs>
+      <rect x="116" y="40" width="28" height="28" rx="8" fill="url(#step-logo-grad)" />
+      <rect x="122" y="46" width="8" height="8" rx="2" fill="#ffffff" />
+      <circle cx="137.5" cy="61.5" r="4.2" fill="#ffffff" fillOpacity="0.9" />
 
       {/* Кнопка запуска */}
       <rect x="48" y="90" width="164" height="42" rx="12" fill="#0d0d0d" />

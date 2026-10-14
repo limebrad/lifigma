@@ -5,7 +5,7 @@
 import { useEffect, useState } from 'react'
 import { EDITOR_URL, NAV_LINKS } from '../../constants/landing'
 import { Button } from '../ui/Button'
-import { FigmaLogo } from '../ui/FigmaLogo'
+import { Logo } from '../ui/Logo'
 import { Icon } from '../ui/Icon'
 import { Container } from '../ui/Container'
 
@@ -30,7 +30,7 @@ export function SiteHeader() {
           className="rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet focus-visible:ring-offset-2"
           aria-label="Мини Фигма — на главную"
         >
-          <FigmaLogo />
+          <Logo />
         </a>
 
         {/* Навигация для широких экранов */}

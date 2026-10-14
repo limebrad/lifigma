@@ -4,7 +4,7 @@
  */
 import { EDITOR_URL, FIGMA_URL, NAV_LINKS } from '../../constants/landing'
 import { Container } from '../ui/Container'
-import { FigmaLogo } from '../ui/FigmaLogo'
+import { Logo } from '../ui/Logo'
 import { Icon } from '../ui/Icon'
 
 export function SiteFooter() {
@@ -13,7 +13,7 @@ export function SiteFooter() {
       <Container className="py-14 sm:py-16">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr_1.1fr]">
           <div>
-            <FigmaLogo />
+            <Logo />
             <p className="mt-4 max-w-sm text-[15px] leading-relaxed text-muted">
               Мини Фигма — учебный мини-редактор фигур в браузере: холст с сеткой, фигуры, слои,
               свойства и отмена действий.

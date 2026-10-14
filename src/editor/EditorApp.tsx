@@ -9,7 +9,7 @@ import { Canvas } from '../components/Canvas'
 import { LayersPanel } from '../components/LayersPanel'
 import { PropertiesPanel } from '../components/PropertiesPanel'
 import { Toolbar } from '../components/Toolbar'
-import { FigmaLogoMark } from '../components/ui/FigmaLogo'
+import { LogoMark } from '../components/ui/Logo'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { useShapes } from '../hooks/useShapes'
 
@@ -68,7 +68,7 @@ export function EditorApp() {
           title="Вернуться на главную"
           className="inline-flex items-center gap-2 rounded-lg px-1.5 py-1 text-text-main transition-colors hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
         >
-          <FigmaLogoMark className="h-4 w-auto" />
+          <LogoMark className="h-4 w-auto" />
           <span className="text-sm font-semibold tracking-tight">Мини Фигма</span>
         </a>
 

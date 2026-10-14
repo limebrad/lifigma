@@ -59,6 +59,10 @@ export function EditorWindow({ className = '' }: { className?: string }) {
         <pattern id="editor-grid" width="32" height="32" patternUnits="userSpaceOnUse">
           <circle cx="1" cy="1" r="1" fill="#241f36" />
         </pattern>
+        <linearGradient id="editor-logo-grad" x1="22" y1="12" x2="46" y2="36" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#a259ff" />
+          <stop offset="1" stopColor="#1abcfe" />
+        </linearGradient>
       </defs>
 
       <g clipPath="url(#editor-window)">
@@ -68,13 +72,9 @@ export function EditorWindow({ className = '' }: { className?: string }) {
         <rect x="0" y="0" width="1040" height="48" fill={PANEL} />
         <line x1="0" y1="48" x2="1040" y2="48" stroke={BORDER} strokeWidth="1.5" />
 
-        <g transform="translate(22 10) scale(0.5)">
-          <path fill="#1abcfe" d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0Z" />
-          <path fill="#0acf83" d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0Z" />
-          <path fill="#ff7262" d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19Z" />
-          <path fill="#f24e1e" d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5Z" />
-          <path fill="#a259ff" d="M0 28.5A9.5 9.5 0 0 1 9.5 19H19v19H9.5A9.5 9.5 0 0 1 0 28.5Z" />
-        </g>
+        <rect x="22" y="12" width="24" height="24" rx="7" fill="url(#editor-logo-grad)" />
+        <rect x="27" y="17" width="6.5" height="6.5" rx="1.6" fill="#ffffff" />
+        <circle cx="38" cy="28" r="3.6" fill="#ffffff" fillOpacity="0.9" />
         <text x="52" y="31" fontSize="15" fontWeight="700" fill={TEXT}>
           Мини Фигма
         </text>
