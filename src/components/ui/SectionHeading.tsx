@@ -6,7 +6,6 @@ type SectionHeadingProps = {
   eyebrow?: string
   title: string
   description?: string
-  align?: 'left' | 'center'
   className?: string
 }
 
@@ -14,23 +13,20 @@ export function SectionHeading({
   eyebrow,
   title,
   description,
-  align = 'center',
   className = '',
 }: SectionHeadingProps) {
-  const alignment = align === 'center' ? 'items-center text-center' : 'items-start text-left'
-
   return (
-    <div className={`flex max-w-2xl flex-col gap-4 ${alignment} ${className}`}>
+    <div className={`flex max-w-2xl flex-col items-center gap-4 text-center ${className}`}>
       {eyebrow ? (
-        <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-violet">
+        <span className="text-caption font-semibold uppercase tracking-[0.14em] text-brand-violet-deep">
           {eyebrow}
         </span>
       ) : null}
-      <h2 className="text-balance text-3xl font-extrabold leading-[1.08] tracking-[-0.02em] text-ink sm:text-4xl md:text-[44px]">
+      <h2 className="text-balance text-3xl font-extrabold leading-[1.08] tracking-[-0.02em] text-ink sm:text-4xl md:text-display">
         {title}
       </h2>
       {description ? (
-        <p className="text-pretty text-base leading-relaxed text-muted sm:text-[17px]">
+        <p className="text-pretty text-base leading-relaxed text-muted sm:text-lead">
           {description}
         </p>
       ) : null}

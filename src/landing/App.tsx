@@ -1,18 +1,17 @@
 /**
- * src/App.tsx — собирает посадочную страницу «Мини Фигма» из секций.
- *
- * Прежний редактор mini-figma остался в src/components, hooks, types, utils
- * и constants — здесь он больше не подключается, но исходники не удалены.
+ * src/landing/App.tsx — собирает посадочную страницу «Мини Фигма» из секций.
+ * Сам редактор живёт на отдельной странице (src/editor/EditorApp.tsx),
+ * поэтому здесь подключаются только секции лендинга.
  */
-import { Audience } from './components/landing/Audience'
-import { Faq } from './components/landing/Faq'
-import { Features } from './components/landing/Features'
-import { FinalCta } from './components/landing/FinalCta'
-import { Hero } from './components/landing/Hero'
-import { Showcase } from './components/landing/Showcase'
-import { SiteFooter } from './components/landing/SiteFooter'
-import { SiteHeader } from './components/landing/SiteHeader'
-import { Steps } from './components/landing/Steps'
+import { Audience } from '../components/landing/Audience'
+import { Faq } from '../components/landing/Faq'
+import { Features } from '../components/landing/Features'
+import { FinalCta } from '../components/landing/FinalCta'
+import { Hero } from '../components/landing/Hero'
+import { Showcase } from '../components/landing/Showcase'
+import { SiteFooter } from '../components/landing/SiteFooter'
+import { SiteHeader } from '../components/landing/SiteHeader'
+import { Steps } from '../components/landing/Steps'
 
 export function App() {
   return (

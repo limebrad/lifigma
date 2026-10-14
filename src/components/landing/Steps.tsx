@@ -17,7 +17,7 @@ export function Steps() {
           <SectionHeading
             eyebrow="Как пользоваться"
             title="Первый рисунок — меньше чем за минуту"
-            description="Никаких настроек и установки: открыл редактор, выбрал инструмент, нарисовал фигуру."
+            description="Открыл редактор, выбрал инструмент, нарисовал фигуру — три коротких шага."
           />
         </Reveal>
 
@@ -38,7 +38,7 @@ export function Steps() {
                   <h3 className="mt-3 text-lg font-bold tracking-[-0.01em] text-ink">
                     {step.title}
                   </h3>
-                  <p className="mt-2 text-[15px] leading-relaxed text-muted">{step.text}</p>
+                  <p className="mt-2 text-body leading-relaxed text-muted">{step.text}</p>
                 </article>
               </Reveal>
 

@@ -1,6 +1,6 @@
 /**
  * src/components/landing/Showcase.tsx — визуальная демонстрация: три карточки
- * с иллюстрациями рабочего процесса в Figma.
+ * с иллюстрациями того, как выглядит редактор.
  */
 import { SHOWCASE } from '../../constants/landing'
 import { Container } from '../ui/Container'
@@ -14,7 +14,7 @@ export function Showcase() {
       <Container>
         <Reveal className="flex justify-center">
           <SectionHeading
-            eyebrow="Что внутри"
+            eyebrow="Как устроено"
             title="Холст, фигуры и панели"
             description="Три части редактора, с которыми ты будешь работать: полотно с камерой, инструменты фигур и панели слоёв и свойств."
           />
@@ -28,10 +28,10 @@ export function Showcase() {
                   <ShowcaseVisual variant={item.variant} />
                 </div>
                 <div className="flex flex-1 flex-col p-6">
-                  <h3 className="text-[17px] font-bold tracking-[-0.01em] text-ink">
+                  <h3 className="text-lead font-bold tracking-[-0.01em] text-ink">
                     {item.title}
                   </h3>
-                  <p className="mt-2.5 text-[15px] leading-relaxed text-muted">{item.text}</p>
+                  <p className="mt-2.5 text-body leading-relaxed text-muted">{item.text}</p>
                 </div>
               </article>
             </Reveal>

@@ -19,7 +19,7 @@ export function Faq() {
         <Reveal className="flex justify-center">
           <SectionHeading
             eyebrow="Вопросы"
-            title="Отвечаем на главное"
+            title="Частые вопросы"
             description="Коротко о том, что это за проект и как им пользоваться."
           />
         </Reveal>
@@ -47,7 +47,7 @@ export function Faq() {
                       onClick={() => setOpenId(isOpen ? null : item.id)}
                       className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-violet sm:px-6"
                     >
-                      <span className="text-[16px] font-semibold leading-snug text-ink sm:text-[17px]">
+                      <span className="text-base font-semibold leading-snug text-ink sm:text-lead">
                         {item.question}
                       </span>
                       <span
@@ -70,7 +70,7 @@ export function Faq() {
                     data-open={isOpen}
                   >
                     <div>
-                      <p className="px-5 pb-5 text-[15px] leading-relaxed text-muted sm:px-6">
+                      <p className="px-5 pb-5 text-body leading-relaxed text-muted sm:px-6">
                         {item.answer}
                       </p>
                     </div>
@@ -80,13 +80,13 @@ export function Faq() {
             })}
           </ul>
 
-          <p className="mt-8 text-center text-[15px] text-muted">
-            Не нашли ответ?{' '}
+          <p className="mt-8 text-center text-body text-muted">
+            Лучше один раз попробовать —{' '}
             <a
               href={EDITOR_URL}
-              className="inline-flex items-center gap-1.5 font-semibold text-ink underline decoration-line-2 underline-offset-4 transition-colors hover:decoration-ink"
+              className="inline-flex items-center gap-1.5 font-semibold text-ink underline decoration-line-2 underline-offset-4 transition-colors hover:decoration-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet focus-visible:ring-offset-2 focus-visible:rounded"
             >
-              Откройте редактор и попробуйте сами
+              открой редактор
               <Icon name="arrowRight" className="h-4 w-4" />
             </a>
           </p>

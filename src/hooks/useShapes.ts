@@ -8,14 +8,12 @@
  * Компоненты получают всё через пропсы и не знают, как хранится состояние.
  */
 import { useCallback, useRef, useState } from 'react'
+import { DEFAULT_FILL } from '../constants/colors'
 import type { DraftShape, Point, SelectMode, Shape, ShapeType, Tool } from '../types/shape'
 
 function createId(): string {
   return `shape-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`
 }
-
-/** Цвет заливки новых фигур (акцент проекта). */
-const DEFAULT_FILL = '#7c6cff'
 
 /** Сколько шагов истории храним (старые снимки отбрасываются). */
 const HISTORY_LIMIT = 100

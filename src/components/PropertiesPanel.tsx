@@ -5,6 +5,8 @@
  * пресетов.
  */
 import { useState } from 'react'
+import { DEFAULT_FILL, PRESET_COLORS } from '../constants/colors'
+import { SHAPE_LABELS } from '../constants/shapes'
 import type { Shape } from '../types/shape'
 
 export interface PropertiesPanelProps {
@@ -13,14 +15,8 @@ export interface PropertiesPanelProps {
   onUpdateShape: (id: string, patch: Partial<Omit<Shape, 'id'>>) => void
 }
 
-/** Быстрая палитра: один клик — и цвет применён (без системного пикера). */
-const PRESET_COLORS = [
-  '#7c6cff', '#3fd8f0', '#f66fc8', '#4ade80',
-  '#f5a623', '#ff5d5d', '#ece9f8', '#1b1727',
-]
-
 /** Цвет, который показываем, если заливку вообще не удалось разобрать. */
-const FALLBACK_HEX = '#7c6cff'
+const FALLBACK_HEX = DEFAULT_FILL
 
 /** Проверяет, что строка — непустой CSS-цвет (hex, named, rgb(), okhsl() …). */
 function isValidColor(value: string): boolean {
@@ -198,7 +194,7 @@ export function PropertiesPanel({ selectedShapes, onUpdateShape }: PropertiesPan
       <div className="min-h-0 flex-1 overflow-y-auto p-3">
         {shape ? (
           <dl className="space-y-1.5 text-sm">
-            <PropertyRow label="Тип" value={shape.type} />
+            <PropertyRow label="Тип" value={SHAPE_LABELS[shape.type]} />
             <PropertyRow label="X" value={Math.round(shape.x)} />
             <PropertyRow label="Y" value={Math.round(shape.y)} />
             <PropertyRow label="W" value={Math.round(shape.width)} />

@@ -7,8 +7,10 @@
  */
 import type {
   Audience,
+  AudienceIcon,
   FaqItem,
   Feature,
+  FeatureIcon,
   NavLink,
   ShowcaseItem,
   Step,
@@ -20,10 +22,21 @@ export const EDITOR_URL = `${import.meta.env.BASE_URL}editor.html`
 /** Официальный сайт Figma — только для пояснения в подвале. */
 export const FIGMA_URL = 'https://www.figma.com/'
 
+/** Цвета плашек карточек: ключ — имя иконки, одно место на все секции. */
+export const CARD_ACCENTS: Record<FeatureIcon | AudienceIcon, { chip: string; glyph: string }> = {
+  grid: { chip: 'bg-brand-violet/12', glyph: '#a259ff' },
+  shapes: { chip: 'bg-brand-blue/12', glyph: '#0e9fd6' },
+  layers: { chip: 'bg-brand-green/12', glyph: '#0a9d68' },
+  undo: { chip: 'bg-brand-orange/12', glyph: '#e5533d' },
+  spark: { chip: 'bg-brand-violet/12', glyph: '#a259ff' },
+  gem: { chip: 'bg-brand-blue/12', glyph: '#0e9fd6' },
+  team: { chip: 'bg-brand-green/12', glyph: '#0a9d68' },
+}
+
 export const NAV_LINKS: NavLink[] = [
   { href: '#features', label: 'Возможности' },
   { href: '#steps', label: 'Как пользоваться' },
-  { href: '#showcase', label: 'Что внутри' },
+  { href: '#showcase', label: 'Как устроено' },
   { href: '#audience', label: 'Кому подойдёт' },
   { href: '#faq', label: 'Вопросы' },
 ]
@@ -59,7 +72,7 @@ export const STEPS: Step[] = [
   {
     number: '01',
     title: 'Открой редактор',
-    text: 'Нажми «Открыть редактор» — он запустится прямо в браузере. Устанавливать ничего не нужно, аккаунт тоже не требуется.',
+    text: 'Нажми «Открыть редактор» — он запустится прямо в браузере.',
   },
   {
     number: '02',
@@ -98,7 +111,7 @@ export const AUDIENCE: Audience[] = [
   {
     id: 'learners',
     icon: 'spark',
-    title: 'Тем, кто учит интерфейсы',
+    title: 'Тем, кто осваивает интерфейсы',
     text: 'Понятный холст без десятков панелей: видно, как устроены фигуры, слои, координаты и камера — на живом примере.',
   },
   {

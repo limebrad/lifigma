@@ -1,6 +1,6 @@
 /**
  * src/components/landing/SiteHeader.tsx — липкая навигация с логотипом,
- * меню разделов, кнопкой скачивания и мобильным раскрывающимся меню.
+ * меню разделов, кнопкой «Открыть редактор» и мобильным раскрывающимся меню.
  */
 import { useEffect, useState } from 'react'
 import { EDITOR_URL, NAV_LINKS } from '../../constants/landing'
@@ -40,7 +40,7 @@ export function SiteHeader() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="rounded-full px-4 py-2 text-[15px] font-medium text-muted transition-colors duration-200 hover:bg-mist hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet focus-visible:ring-offset-2"
+                  className="rounded-full px-4 py-2 text-body font-medium text-muted transition-colors duration-200 hover:bg-mist hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-violet focus-visible:ring-offset-2"
                 >
                   {link.label}
                 </a>

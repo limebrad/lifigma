@@ -6,8 +6,6 @@ import type { Tool } from '../types/shape'
 
 export interface ToolDefinition {
   id: Tool
-  /** Подпись (используется в подсказках). */
-  label: string
   /** Горячая клавиша для отображения в подсказках (как в Figma). */
   keyboard: string
   /**
@@ -21,9 +19,9 @@ export interface ToolDefinition {
 }
 
 export const TOOLS: ToolDefinition[] = [
-  { id: 'select', label: 'Select', keyboard: 'V', keyCode: 'KeyV', hint: 'Выбор и перемещение (V)' },
-  { id: 'rectangle', label: 'Rectangle', keyboard: 'R', keyCode: 'KeyR', hint: 'Прямоугольник (R)' },
-  { id: 'ellipse', label: 'Ellipse', keyboard: 'O', keyCode: 'KeyO', hint: 'Эллипс (O)' },
+  { id: 'select', keyboard: 'V', keyCode: 'KeyV', hint: 'Выбор и перемещение (V)' },
+  { id: 'rectangle', keyboard: 'R', keyCode: 'KeyR', hint: 'Прямоугольник (R)' },
+  { id: 'ellipse', keyboard: 'O', keyCode: 'KeyO', hint: 'Эллипс (O)' },
 ]
 
 /** Клавиша (в нижнем регистре) -> инструмент. */

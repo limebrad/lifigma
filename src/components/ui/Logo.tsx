@@ -43,7 +43,7 @@ export function Logo({ className = '' }: LogoProps) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <LogoMark className="h-7 w-auto" />
-      <span className="text-[17px] font-extrabold tracking-tight text-ink">
+      <span className="text-lead font-extrabold tracking-tight text-ink">
         Мини Фигма
       </span>
     </span>

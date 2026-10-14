@@ -5,6 +5,7 @@
  * последней, оказывается в начале списка.
  */
 import { useMemo } from 'react'
+import { SHAPE_LABELS } from '../constants/shapes'
 import type { Shape } from '../types/shape'
 
 export interface LayersPanelProps {
@@ -70,7 +71,7 @@ export function LayersPanel({ shapes, selectedIds, onSelectShape }: LayersPanelP
                       {shape.type === 'ellipse' ? '⬭' : '▭'}
                     </span>
                     <span className="truncate">
-                      {shape.type} {number}
+                      {SHAPE_LABELS[shape.type]} {number}
                     </span>
                   </button>
                 </li>

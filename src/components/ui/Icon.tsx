@@ -5,11 +5,6 @@
 import type { ReactNode } from 'react'
 
 export type IconName =
-  | 'window'
-  | 'type'
-  | 'layout'
-  | 'users'
-  | 'prototype'
   | 'grid'
   | 'shapes'
   | 'layers'
@@ -20,49 +15,11 @@ export type IconName =
   | 'menu'
   | 'close'
   | 'chevron'
-  | 'download'
   | 'arrowRight'
   | 'external'
   | 'check'
 
 const PATHS: Record<IconName, ReactNode> = {
-  window: (
-    <>
-      <rect x="3" y="4" width="18" height="16" rx="2.5" />
-      <path d="M3 8.5h18" />
-      <path d="M6.2 6.3h.01M8.6 6.3h.01" />
-    </>
-  ),
-  layout: (
-    <>
-      <rect x="3.5" y="3.5" width="7" height="7" rx="1.6" />
-      <rect x="13.5" y="3.5" width="7" height="11" rx="1.6" />
-      <rect x="3.5" y="13.5" width="7" height="7" rx="1.6" />
-      <rect x="13.5" y="17.5" width="7" height="3" rx="1.4" />
-    </>
-  ),
-  type: (
-    <>
-      <path d="M5 19 11 5l6 14" />
-      <path d="M7 14.5h8" />
-    </>
-  ),
-  users: (
-    <>
-      <circle cx="9" cy="8" r="3.2" />
-      <path d="M3.8 19.2a5.4 5.4 0 0 1 10.4 0" />
-      <path d="M16 5.2a3.2 3.2 0 0 1 0 6.1" />
-      <path d="M17.2 14.4a5.4 5.4 0 0 1 3 4.8" />
-    </>
-  ),
-  prototype: (
-    <>
-      <rect x="3" y="3.5" width="9" height="7" rx="1.8" />
-      <rect x="12" y="13.5" width="9" height="7" rx="1.8" />
-      <path d="M7.5 10.5v3a1.8 1.8 0 0 0 1.8 1.8H12" />
-      <circle cx="7.5" cy="7" r="0.6" fill="currentColor" stroke="none" />
-    </>
-  ),
   grid: (
     <>
       <rect x="4" y="4" width="16" height="16" rx="2" />
@@ -116,13 +73,6 @@ const PATHS: Record<IconName, ReactNode> = {
   ),
   close: <path d="M6 6l12 12M18 6L6 18" />,
   chevron: <path d="M6 9.5l6 6 6-6" />,
-  download: (
-    <>
-      <path d="M12 3.5v11.2" />
-      <path d="M7.6 10.6 12 15l4.4-4.4" />
-      <path d="M4.5 18.5h15" />
-    </>
-  ),
   arrowRight: (
     <>
       <path d="M4.5 12h14.5" />

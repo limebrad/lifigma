@@ -4,16 +4,10 @@
  * холст с фигурами, панели свойств и слоёв), нарисованная в SVG: масштабируется
  * без потерь и весит мало. Палитра совпадает с настоящим редактором.
  */
+import { EDITOR_THEME, PRESET_COLORS } from '../../constants/colors'
 
-const BG = '#0e0c16'
-const PANEL = '#14111f'
-const PANEL2 = '#1b1727'
-const PANEL3 = '#241f3d'
-const BORDER = '#2b2540'
-const TEXT = '#ece9f8'
-const MUTED = '#9c97b8'
-const ACCENT = '#7c6cff'
-const CYAN = '#3fd8f0'
+const { bg: BG, panel: PANEL, panel2: PANEL2, panel3: PANEL3, border: BORDER } = EDITOR_THEME
+const { text: TEXT, muted: MUTED, accent: ACCENT, cyan: CYAN } = EDITOR_THEME
 
 const GRID_MINOR = 'rgba(236, 233, 248, 0.10)'
 const AXIS = 'rgba(124, 108, 255, 0.35)'
@@ -27,7 +21,7 @@ const FIELDS = [
 ]
 
 /** Палитра пресетов — те же цвета, что в PropertiesPanel редактора. */
-const PRESETS = ['#7c6cff', '#3fd8f0', '#f66fc8', '#4ade80', '#f5a623', '#ff5d5d', '#ece9f8', '#1b1727']
+const PRESETS = PRESET_COLORS
 
 /** Маркеры выделения: 4 угла + середины сторон рамки. */
 const HANDLES = [
@@ -57,7 +51,7 @@ export function EditorWindow({ className = '' }: { className?: string }) {
           <rect x="64" y="48" width="736" height="612" />
         </clipPath>
         <pattern id="editor-grid" width="32" height="32" patternUnits="userSpaceOnUse">
-          <circle cx="1" cy="1" r="1" fill="#241f36" />
+          <circle cx="1" cy="1" r="1" fill={EDITOR_THEME.gridDot} />
         </pattern>
         <linearGradient id="editor-logo-grad" x1="22" y1="12" x2="46" y2="36" gradientUnits="userSpaceOnUse">
           <stop stopColor="#a259ff" />

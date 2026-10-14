@@ -12,7 +12,7 @@ type RevealProps = {
   /** Задержка появления, мс. */
   delay?: number
   /** Тег-обёртка: div по умолчанию, li — для элементов списка. */
-  as?: 'div' | 'li' | 'article' | 'section'
+  as?: 'div' | 'li'
 }
 
 export function Reveal({ children, className = '', delay = 0, as = 'div' }: RevealProps) {

@@ -2,6 +2,7 @@
  * src/components/visuals/StepVisual.tsx — маленькие иллюстрации к трём шагам:
  * открыть редактор, нарисовать фигуру и настроить её свойства.
  */
+import { PRESET_COLORS } from '../../constants/colors'
 
 type StepVisualProps = {
   index: number
@@ -106,19 +107,17 @@ function Adjust() {
         7C6CFF
       </text>
 
-      {['#7c6cff', '#3fd8f0', '#f66fc8', '#4ade80', '#f5a623', '#ff5d5d', '#ece9f8', '#1b1727'].map(
-        (color, i) => (
-          <circle
-            key={color}
-            cx={30 + i * 26}
-            cy={166}
-            r="8"
-            fill={color}
-            stroke="#e0e0e0"
-            strokeWidth="1"
-          />
-        ),
-      )}
+      {PRESET_COLORS.map((color, i) => (
+        <circle
+          key={color}
+          cx={30 + i * 26}
+          cy={166}
+          r="8"
+          fill={color}
+          stroke="#e0e0e0"
+          strokeWidth="1"
+        />
+      ))}
     </>
   )
 }

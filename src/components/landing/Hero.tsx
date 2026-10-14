@@ -30,23 +30,23 @@ export function Hero() {
       <Container>
         <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] lg:gap-12">
           <Reveal className="flex flex-col items-start">
-            <span className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-paper/70 px-3.5 py-1.5 text-[13px] font-medium text-muted">
+            <span className="inline-flex items-center gap-2 rounded-full border border-line-2 bg-paper/70 px-3.5 py-1.5 text-caption font-medium text-muted">
               <span className="h-1.5 w-1.5 rounded-full bg-brand-green" />
               Учебный мини-редактор, который живёт в браузере
             </span>
 
-            <h1 className="mt-6 text-[40px] font-extrabold leading-[1.05] tracking-[-0.03em] text-ink sm:text-[56px] lg:text-[64px]">
+            <h1 className="mt-6 text-display-sm font-extrabold leading-[1.05] tracking-[-0.03em] text-ink sm:text-display-md lg:text-display-lg">
               Рисуй и двигай фигуры
               <br />
-              <span className="bg-[linear-gradient(100deg,#a259ff,#1abcfe)] bg-clip-text text-transparent">
+              {/* Тёмный градиент вместо прежнего светлого: слова читаются на белом */}
+              <span className="bg-[linear-gradient(100deg,#7c3aed,#0b6fb0)] bg-clip-text text-transparent">
                 прямо в браузере
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-pretty text-lg leading-relaxed text-muted">
               Мини Фигма — учебный редактор: холст с сеткой, панорама и зум, прямоугольники и
-              эллипсы, слои, свойства и отмена действий. Открывается одним кликом — без установки
-              и регистрации.
+              эллипсы, слои, свойства и отмена действий. Открывается одним кликом.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -68,15 +68,11 @@ export function Hero() {
               >
                 Как это работает
                 <Icon
-                  name="arrowRight"
-                  className="h-5 w-5 text-muted transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-ink"
+                  name="chevron"
+                  className="h-5 w-5 text-muted transition-transform duration-200 group-hover:translate-y-0.5 group-hover:text-ink"
                 />
               </a>
             </div>
-
-            <p className="mt-5 text-sm text-faint">
-              Редактор откроется в этом же окне — устанавливать ничего не нужно.
-            </p>
 
             <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 border-t border-line pt-6">
               {META.map((item) => (

@@ -20,12 +20,11 @@ export function FinalCta() {
 
       <Container>
         <Reveal className="relative flex flex-col items-center text-center">
-          <h2 className="max-w-3xl text-balance text-4xl font-extrabold leading-[1.06] tracking-[-0.03em] sm:text-5xl md:text-[56px]">
+          <h2 className="max-w-3xl text-balance text-4xl font-extrabold leading-[1.06] tracking-[-0.03em] sm:text-5xl md:text-display-md">
             Открой редактор — он уже готов
           </h2>
           <p className="mt-5 max-w-xl text-pretty text-lg leading-relaxed text-white/70">
-            Ни установки, ни регистрации: нажми кнопку — и рисуй фигуры. Всё работает прямо в
-            браузере.
+            Нажми кнопку — и рисуй фигуры. Всё работает прямо в браузере, без лишних шагов.
           </p>
 
           <div className="mt-9">

@@ -1,7 +1,7 @@
 /**
- * src/editor/EditorApp.tsx — рабочая страница редактора mini-figma.
+ * src/editor/EditorApp.tsx — рабочая страница редактора «Мини Фигма».
  * Холст и панели уже живут в src/components; здесь они собираются в одно
- * приложение и получают тонкую верхнюю панель сайта со ссылкой на лендинг.
+ * приложение и получают тонкую верхнюю панель со ссылкой на лендинг.
  * Состояние фигур — в useShapes, горячие клавиши — в useHotkeys.
  */
 import { useCallback } from 'react'
@@ -61,16 +61,12 @@ export function EditorApp() {
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden bg-canvas-bg text-text-main">
-      {/* Верхняя панель сайта: возврат на лендинг и подсказка по клавишам */}
+      {/* Верхняя панель сайта: подсказка по клавишам и возврат на лендинг */}
       <header className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-panel-border bg-panel px-3">
-        <a
-          href={HOME_URL}
-          title="Вернуться на главную"
-          className="inline-flex items-center gap-2 rounded-lg px-1.5 py-1 text-text-main transition-colors hover:bg-panel-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-        >
+        <div className="inline-flex items-center gap-2 px-1.5 py-1 text-text-main">
           <LogoMark className="h-4 w-auto" />
           <span className="text-sm font-semibold tracking-tight">Мини Фигма</span>
-        </a>
+        </div>
 
         <p className="hidden text-xs text-text-muted sm:block">
           Выбор — V · Прямоугольник — R · Эллипс — O · Отмена — Ctrl/Cmd+Z
@@ -83,6 +79,12 @@ export function EditorApp() {
           ← На главную
         </a>
       </header>
+
+      {/* На узких экранах честно предупреждаем: камера завязана на мышь */}
+      <p className="border-b border-panel-border bg-panel-2 px-3 py-1.5 text-center text-xs text-text-muted sm:hidden">
+        Редактор рассчитан на компьютер: рисовать и двигать фигуры можно, а панорама и зум —
+        мышью.
+      </p>
 
       <div className="flex min-h-0 flex-1">
         <Toolbar activeTool={activeTool} onSelectTool={setActiveTool} />

@@ -1,7 +1,7 @@
 @import 'tailwindcss';
 
 /*
- * Дизайн-токены лендинга «Мини Фигма» (Tailwind CSS v4).
+ * Дизайн-токены «Мини Фигма» (Tailwind CSS v4).
  * Из них Tailwind сгенерирует утилиты вида bg-ink, text-muted, border-line,
  * bg-brand-violet и т. д.
  */
@@ -13,30 +13,39 @@
   --color-ink: #0d0d0d;
   --color-ink-2: #1b1b1b;
   --color-muted: #6f6f6f;
-  --color-faint: #a0a0a0;
   --color-paper: #ffffff;
   --color-mist: #f7f7f7;
-  --color-mist-2: #f1f1f1;
   --color-line: #ebebeb;
   --color-line-2: #dcdcdc;
 
   /* Фирменные акценты Figma */
   --color-brand-violet: #a259ff;
+  /* Тёмный фиолетовый: для текста на белом (контраст ≥ 4.5:1) */
+  --color-brand-violet-deep: #7c3aed;
   --color-brand-blue: #1abcfe;
   --color-brand-green: #0acf83;
   --color-brand-orange: #ff7262;
   --color-brand-red: #f24e1e;
+
+  /* Единая шкала размеров текста — вместо произвольных text-[Npx] */
+  --text-caption: 13px;
+  --text-body: 15px;
+  --text-lead: 17px;
+  --text-display-sm: 40px;
+  --text-display: 44px;
+  --text-display-md: 56px;
+  --text-display-lg: 64px;
 }
 
 /*
- * LEGACY: токены прежнего редактора mini-figma. Оставлены, чтобы исходники
- * src/components линтера/сборки по-прежнему находили свои утилиты.
+ * Тёмная палитра редактора. Держим те же значения, что и константы
+ * src/constants/colors.ts, — интерфейс редактора и его SVG-иллюстрации
+ * не должны расходиться.
  */
 @theme {
   --color-canvas-bg: #0e0c16;
   --color-panel: #14111f;
   --color-panel-2: #1b1727;
-  --color-panel-3: #221d31;
   --color-panel-border: rgba(236, 233, 248, 0.12);
   --color-text-main: #ece9f8;
   --color-text-muted: #9c97b8;

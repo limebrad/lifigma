@@ -12,7 +12,7 @@ import type { PointerEvent as ReactPointerEvent } from 'react'
 import type { Point, Size } from '../types/shape'
 import { clamp, zoomAt } from '../utils/geometry'
 import type { Viewport } from '../utils/geometry'
-import { shouldIgnorePanHotkey } from '../utils/dom'
+import { clientToLocal, shouldIgnorePanHotkey } from '../utils/dom'
 
 /** Минимальный зум: 10%. */
 const MIN_ZOOM = 0.1
@@ -114,10 +114,11 @@ export function useViewport(): ViewportApi {
   }, [])
 
   // Клиентские координаты события -> координаты относительно области холста.
-  const toLocal = useCallback((clientX: number, clientY: number): Point => {
-    const rect = containerRef.current?.getBoundingClientRect()
-    return { x: clientX - (rect?.left ?? 0), y: clientY - (rect?.top ?? 0) }
-  }, [])
+  const toLocal = useCallback(
+    (clientX: number, clientY: number): Point =>
+      clientToLocal(containerRef.current, clientX, clientY),
+    [],
+  )
 
   // Колесо мыши: зум. Слушатель вешается на сам холст (не на window), чтобы
   // скролл панелей справа продолжал работать, а зум действовал в область холста.

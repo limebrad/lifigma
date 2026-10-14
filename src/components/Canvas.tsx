@@ -16,6 +16,7 @@ import type { PointerEvent as ReactPointerEvent } from 'react'
 import { useViewport } from '../hooks/useViewport'
 import type { DragOriginal } from '../hooks/useShapes'
 import type { DraftShape, Point, SelectMode, Shape, ShapeType, Tool } from '../types/shape'
+import { clientToLocal } from '../utils/dom'
 import { findTopShapeAt, screenToCanvas } from '../utils/geometry'
 import { MemoizedShapeView as ShapeView } from './Shape'
 
@@ -104,15 +105,9 @@ export function Canvas({
 
   const isShapeTool = activeTool === 'rectangle' || activeTool === 'ellipse'
 
-  // Клиентские координаты события -> координаты относительно области холста.
-  const toLocal = (clientX: number, clientY: number): Point => {
-    const rect = containerRef.current?.getBoundingClientRect()
-    return { x: clientX - (rect?.left ?? 0), y: clientY - (rect?.top ?? 0) }
-  }
-
   // Клиентские координаты -> мировые координаты холста.
   const toWorld = (clientX: number, clientY: number): Point =>
-    screenToCanvas(toLocal(clientX, clientY), viewport, viewportSize)
+    screenToCanvas(clientToLocal(containerRef.current, clientX, clientY), viewport, viewportSize)
 
   const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
     // Панорама: средняя кнопка либо зажатый пробел (работает в любом инструменте).
